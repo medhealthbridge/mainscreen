@@ -1,0 +1,47 @@
+/* Case study pages */
+.cs-hero { padding: calc(var(--header-h) + clamp(28px, 5vw, 72px)) 0 clamp(40px, 5vw, 72px); }
+.cs-crumbs { display: flex; gap: 10px; color: var(--on-dark-2); margin-bottom: clamp(32px, 5vw, 64px); }
+.cs-crumbs a { color: var(--ivory); padding-block: 8px; }
+.cs-meta { color: var(--on-dark-2); margin-bottom: 14px; }
+.cs-meta span { color: var(--volt); }
+.cs-title { font-size: clamp(3.4rem, 15vw, 16rem); font-stretch: 64%; margin-left: -.04em; overflow-wrap: anywhere; }
+.cs-summary { margin-top: 22px; max-width: 34ch; }
+.cs-banner { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin-top: 32px; padding: 14px 16px; border: 1px dashed rgba(215, 255, 63, .5); max-width: 760px; }
+.cs-facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap); margin-top: clamp(40px, 5vw, 72px); }
+.cs-facts > div { border-top: 1px solid var(--rule-dark); padding-top: 14px; display: grid; gap: 8px; align-content: start; }
+.cs-facts dt { color: var(--on-dark-2); }
+.cs-cover { padding-bottom: clamp(56px, 7vw, 120px); }
+.cs-cover-inner { position: relative; padding-right: 12%; }
+.cs-cover-phone { position: absolute; right: var(--gutter); bottom: -6%; width: 17%; transform: rotate(3deg); }
+.cs-row { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); padding: clamp(32px, 4vw, 56px) 0; border-top: 1px solid var(--rule-light); }
+.cs-row:first-child { border-top: 1px solid var(--ink); }
+.cs-label { grid-column: 1 / span 4; font-weight: 800; font-stretch: 74%; text-transform: uppercase; font-size: clamp(1.6rem, 2.6vw, 2.6rem); line-height: .95; display: flex; flex-direction: column; gap: 10px; align-self: start; position: sticky; top: calc(var(--header-h) + 24px); }
+.cs-label .mono-sm { color: var(--on-light-2); font-weight: 400; }
+.cs-content { grid-column: 6 / -1; display: flex; flex-direction: column; gap: 20px; }
+.cs-lead { font-size: clamp(1.15rem, 1.4vw, 1.4rem); line-height: 1.45; max-width: 44ch; }
+.cs-list li { padding: 13px 0 13px 28px; border-bottom: 1px solid var(--rule-light); position: relative; max-width: 62ch; }
+.cs-list li:first-child { border-top: 1px solid var(--rule-light); }
+.cs-list li::before { content: ""; position: absolute; left: 2px; top: 1.2em; width: 12px; height: 2px; background: var(--ink); }
+.cs-outcome li::before { background: var(--volt); height: 6px; width: 6px; top: 1.05em; outline: 1px solid var(--ink); }
+.cs-honest { text-transform: none; letter-spacing: .01em; }
+.cs-decisions { display: grid; gap: 28px; }
+.cs-decisions li { display: grid; gap: 8px; border-top: 1px solid var(--ink); padding-top: 14px; }
+.cs-decisions h3 { font-weight: 750; font-stretch: 85%; font-size: 1.35em; line-height: 1.15; }
+.cs-gallery { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: clamp(40px, 6vw, 96px) var(--gap); margin-top: clamp(56px, 7vw, 112px); align-items: center; }
+.cs-g-l { grid-column: 1 / span 9; }
+.cs-g-r { grid-column: 4 / -1; }
+.cs-g-tall { grid-column: 5 / span 4; }
+.cs-cap { margin-top: 12px; text-transform: none; letter-spacing: .01em; }
+.cs-next { padding: clamp(56px, 7vw, 112px) 0 0; }
+.cs-next-link { display: flex; flex-direction: column; gap: 10px; padding-bottom: clamp(40px, 5vw, 80px); }
+.cs-next-name { font-size: clamp(3rem, 10vw, 11rem); font-stretch: 64%; transition: color .3s; }
+.cs-next-link:hover .cs-next-name, .cs-next-link:focus-visible .cs-next-name { color: var(--volt); }
+@media (max-width: 900px) {
+  .cs-facts { grid-template-columns: 1fr 1fr; }
+  .cs-label { grid-column: 1 / -1; position: static; margin-bottom: 18px; }
+  .cs-content { grid-column: 1 / -1; }
+  .cs-g-l, .cs-g-r { grid-column: 1 / -1; }
+  .cs-g-tall { grid-column: 3 / span 8; }
+  .cs-cover-inner { padding-right: 0; padding-bottom: 14%; }
+  .cs-cover-phone { width: 26%; bottom: 0; }
+}
