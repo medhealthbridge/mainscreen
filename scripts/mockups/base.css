@@ -1,0 +1,18 @@
+/* Shared styles for placeholder project mockups (rendered to images, not shipped as CSS). */
+@font-face { font-family: Inter; src: url(../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2) format("woff2"); font-weight: 100 900; }
+@font-face { font-family: Fraunces; src: url(../../node_modules/@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2) format("woff2"); font-weight: 100 900; }
+@font-face { font-family: Plex; src: url(../../node_modules/@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2) format("woff2"); }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #777; font-family: Inter, sans-serif; -webkit-font-smoothing: antialiased; padding: 20px; display: flex; flex-direction: column; gap: 20px; align-items: flex-start; }
+.shot { overflow: hidden; position: relative; flex: none; }
+.desk { width: 800px; height: 500px; }
+.page { width: 800px; height: 1700px; }
+.phone { width: 390px; height: 844px; }
+.row { display: flex; } .col { display: flex; flex-direction: column; }
+.grow { flex: 1; } .center { align-items: center; } .between { justify-content: space-between; }
+.mono { font-family: Plex, monospace; }
+.dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; flex: none; }
+.av { width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 600; color: #fff; flex: none; }
+.bar { height: 6px; border-radius: 3px; overflow: hidden; }
+.bar > i { display: block; height: 100%; border-radius: 3px; }

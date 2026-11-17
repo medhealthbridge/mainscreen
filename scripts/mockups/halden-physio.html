@@ -1,0 +1,194 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="base.css">
+<style>
+  :root { --sand:#EFE8DC; --paper:#F8F4EC; --navy:#1C2A42; --terra:#C4623F; --mut:#6A6F78; --line:#DED5C5; }
+  .hp { background: var(--paper); color: var(--navy); font-size: 12px; }
+  .serif { font-family: Fraunces, serif; font-variation-settings: "SOFT" 50, "opsz" 72; letter-spacing: -.02em; }
+  .hnav { height: 60px; padding: 0 40px; border-bottom: 1px solid var(--line); }
+  .brand { font-family: Fraunces, serif; font-size: 18px; font-weight: 560; display: flex; align-items: center; gap: 8px; }
+  .brand i { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--terra); display: inline-block; position: relative; }
+  .brand i::after { content: ""; position: absolute; inset: 4px; border-radius: 50%; background: var(--terra); }
+  .links { gap: 24px; font-size: 12px; color: #3E4A5E; }
+  .book { height: 34px; padding: 0 16px; border-radius: 99px; background: var(--navy); color: #fff; display: inline-flex; align-items: center; font-weight: 550; font-size: 12px; gap: 8px; }
+  .book.t { background: var(--terra); }
+  .book.o { background: transparent; color: var(--navy); border: 1px solid var(--navy); }
+  .hero { padding: 54px 40px 40px; gap: 34px; }
+  .hero h1 { font-size: 54px; line-height: 1.02; font-weight: 420; }
+  .hero h1 em { font-style: italic; color: var(--terra); }
+  .photo { border-radius: 16px; overflow: hidden; position: relative; background: linear-gradient(160deg,#C9B9A2,#9E8B73); }
+  .finder { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 18px; gap: 12px; }
+  .opt { border: 1px solid var(--line); border-radius: 10px; padding: 12px; gap: 5px; flex: 1; background: var(--paper); }
+  .opt.on { border-color: var(--navy); background: #fff; box-shadow: 0 0 0 1px var(--navy) inset; }
+  .opt b { font-size: 13px; font-weight: 600; }
+  .opt span { color: var(--mut); font-size: 10.5px; }
+  .eyebrow { font-size: 10px; text-transform: uppercase; letter-spacing: .12em; color: var(--terra); font-weight: 650; }
+  .sec { padding: 46px 40px; gap: 20px; }
+  .tcard { background: #fff; border-radius: 14px; padding: 18px; gap: 8px; flex: 1; border: 1px solid var(--line); }
+  .tcard h3 { font-size: 21px; font-weight: 480; }
+  .tcard p { color: var(--mut); font-size: 11.5px; line-height: 1.5; }
+  .meta { font-size: 10.5px; color: #3E4A5E; display: flex; gap: 10px; margin-top: auto; padding-top: 10px; border-top: 1px solid #EFE8DC; }
+  .person { flex: 1; gap: 10px; }
+  .portrait { height: 210px; border-radius: 14px; position: relative; overflow: hidden; }
+  .quote { background: var(--navy); color: #F3EDE2; border-radius: 16px; padding: 30px; gap: 14px; }
+  .steps { gap: 8px; }
+  .step { flex: 1; height: 4px; border-radius: 2px; background: var(--line); }
+  .step.on { background: var(--navy); }
+  .slot { height: 38px; border: 1px solid var(--line); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 550; background: #fff; }
+  .slot.on { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .slot.off { color: #B4AFA6; background: transparent; text-decoration: line-through; }
+  .day { flex: 1; border-radius: 10px; padding: 9px 0; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 10px; color: var(--mut); border: 1px solid transparent; }
+  .day b { font-size: 16px; color: var(--navy); font-weight: 600; }
+  .day.on { border-color: var(--navy); background: #fff; }
+  .sum { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 18px; gap: 10px; }
+  .kv { display: flex; justify-content: space-between; font-size: 11.5px; padding: 7px 0; border-bottom: 1px solid #F0EADF; }
+  .kv span { color: var(--mut); }
+  .area { padding: 12px 14px; border-radius: 10px; font-size: 12.5px; font-weight: 550; display: flex; justify-content: space-between; align-items: center; }
+  .area.on { background: var(--navy); color: #fff; }
+  .figure { position: absolute; inset: 0; }
+</style></head>
+<body>
+
+<!-- 1. LONG HOMEPAGE -->
+<div class="shot page hp col" data-shot="halden-physio/home">
+  <div class="hnav row center between">
+    <div class="brand"><i></i>Halden Physio</div>
+    <div class="links row"><span>Treatments</span><span>Our team</span><span>What to expect</span><span>Prices</span><span>Contact</span></div>
+    <div class="book">Book an appointment →</div>
+  </div>
+  <div class="hero row">
+    <div class="col" style="flex:1.1;gap:20px;padding-top:10px">
+      <div class="eyebrow">Physiotherapy in Eastfield</div>
+      <h1 class="serif">Move without<br>thinking <em>twice</em><br>about it.</h1>
+      <p style="font-size:14px;line-height:1.55;color:#3E4A5E;max-width:340px">Assessment and treatment for back pain, sports injuries and recovery after surgery — explained clearly, at your pace.</p>
+      <div class="row" style="gap:10px"><div class="book t">Book an appointment</div><div class="book o">Find your treatment</div></div>
+      <div class="row center" style="gap:16px;margin-top:8px;font-size:11px;color:var(--mut)"><span>● Evening appointments</span><span>● No referral needed</span></div>
+    </div>
+    <div class="photo" style="flex:1;height:380px">
+      <svg class="figure" viewBox="0 0 360 380" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E7DCCB"/><stop offset="1" stop-color="#CDBBA2"/></linearGradient></defs><rect width="360" height="380" fill="url(#w)"/><rect x="0" y="270" width="360" height="110" fill="#B9A485"/><rect x="40" y="40" width="110" height="150" rx="6" fill="#F4EEE4" opacity=".7"/><circle cx="215" cy="125" r="30" fill="#7A5C48"/><path d="M170 300 C170 220 190 175 215 170 C245 175 262 220 262 300 Z" fill="#1C2A42"/><path d="M100 300 L300 300 L300 312 L100 312 Z" fill="#8E7859"/><circle cx="118" cy="195" r="22" fill="#5F7B63"/><rect x="113" y="210" width="10" height="90" fill="#6D5A43"/></svg>
+      <div style="position:absolute;left:16px;bottom:16px;background:#fff;border-radius:12px;padding:12px 14px;display:flex;gap:10px;align-items:center;box-shadow:0 10px 30px rgba(28,42,66,.18)"><div style="width:30px;height:30px;border-radius:50%;background:#E4D4C3"></div><div class="col"><b style="font-size:11.5px">Next available</b><span style="font-size:10.5px;color:var(--mut)">Today, 17:40 · Back &amp; neck</span></div></div>
+    </div>
+  </div>
+  <div style="padding:0 40px">
+    <div class="finder col">
+      <div class="row between center"><b style="font-size:14px" class="serif">Where does it hurt?</b><span style="font-size:10.5px;color:var(--mut)">Choose an area to see the right treatment</span></div>
+      <div class="row" style="gap:10px">
+        <div class="opt on col"><b>Back &amp; neck</b><span>Stiffness, pain, posture</span></div>
+        <div class="opt col"><b>Sports injury</b><span>Sprains, strains, return to play</span></div>
+        <div class="opt col"><b>Joints</b><span>Knee, hip, shoulder</span></div>
+        <div class="opt col"><b>After surgery</b><span>Guided recovery</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="sec col">
+    <div class="eyebrow">Treatments</div>
+    <div class="row between" style="align-items:flex-end"><h2 class="serif" style="font-size:36px;font-weight:420;line-height:1.05">Clear treatment,<br>clearly explained.</h2><span style="font-size:12px;border-bottom:1px solid;padding-bottom:2px">All treatments →</span></div>
+    <div class="row" style="gap:14px">
+      <div class="tcard col"><span class="eyebrow" style="color:var(--mut)">01</span><h3 class="serif">First assessment</h3><p>We find out what's going on, explain it in plain words and agree a plan with you.</p><div class="meta"><span>60 min</span><span>·</span><span>In clinic</span></div></div>
+      <div class="tcard col"><span class="eyebrow" style="color:var(--mut)">02</span><h3 class="serif">Follow-up treatment</h3><p>Hands-on treatment and exercises that fit your day, adjusted as you improve.</p><div class="meta"><span>40 min</span><span>·</span><span>In clinic</span></div></div>
+      <div class="tcard col"><span class="eyebrow" style="color:var(--mut)">03</span><h3 class="serif">Sports rehab</h3><p>A staged plan to get you back to training — with clear milestones.</p><div class="meta"><span>45 min</span><span>·</span><span>Clinic + gym</span></div></div>
+    </div>
+  </div>
+  <div class="sec row" style="gap:30px;background:var(--sand)">
+    <div class="col" style="flex:.8;gap:14px"><div class="eyebrow">Our team</div><h2 class="serif" style="font-size:34px;font-weight:420;line-height:1.05">Two physios.<br>One approach.</h2><p style="color:#3E4A5E;line-height:1.55">You see the same practitioner every visit, so you never repeat your story.</p></div>
+    <div class="person col"><div class="portrait" style="background:linear-gradient(170deg,#D8C7B0,#A88E70)"><svg class="figure" viewBox="0 0 200 210"><circle cx="100" cy="80" r="30" fill="#6A4E3C"/><path d="M45 210 C50 140 75 118 100 118 C125 118 150 140 155 210Z" fill="#F8F4EC"/></svg></div><b class="serif" style="font-size:17px;font-weight:500">Maren Holt</b><span style="color:var(--mut);font-size:11px">Sports &amp; musculoskeletal</span></div>
+    <div class="person col"><div class="portrait" style="background:linear-gradient(170deg,#C8C9BB,#8C907C)"><svg class="figure" viewBox="0 0 200 210"><circle cx="100" cy="80" r="30" fill="#3E2E26"/><path d="M45 210 C50 140 75 118 100 118 C125 118 150 140 155 210Z" fill="#1C2A42"/></svg></div><b class="serif" style="font-size:17px;font-weight:500">Idris Coleman</b><span style="color:var(--mut);font-size:11px">Back pain &amp; post-surgery</span></div>
+  </div>
+  <div class="sec col">
+    <div class="eyebrow">What to expect</div>
+    <div class="row" style="gap:14px">
+      <div class="col grow" style="gap:8px;border-top:1px solid var(--navy);padding-top:14px"><b class="serif" style="font-size:20px;font-weight:480">1 · Book online</b><span style="color:var(--mut);line-height:1.5">Pick a time that suits you, day or evening.</span></div>
+      <div class="col grow" style="gap:8px;border-top:1px solid var(--navy);padding-top:14px"><b class="serif" style="font-size:20px;font-weight:480">2 · Assessment</b><span style="color:var(--mut);line-height:1.5">We listen, examine and explain what we find.</span></div>
+      <div class="col grow" style="gap:8px;border-top:1px solid var(--navy);padding-top:14px"><b class="serif" style="font-size:20px;font-weight:480">3 · Your plan</b><span style="color:var(--mut);line-height:1.5">Treatment and exercises you can actually keep up.</span></div>
+    </div>
+  </div>
+  <div style="padding:0 40px 46px"><div class="quote col"><span class="eyebrow" style="color:#E8A88E">Sample review — placeholder</span><p class="serif" style="font-size:26px;line-height:1.2;font-weight:400">"I finally understood why my back hurt — and what to do about it."</p><span style="font-size:11px;opacity:.7">Placeholder text for layout</span></div></div>
+  <div class="sec row between center" style="background:var(--navy);color:#F3EDE2;padding:40px">
+    <h2 class="serif" style="font-size:34px;font-weight:420;line-height:1.05">Ready when you are.</h2>
+    <div class="book t" style="height:42px;padding:0 22px;font-size:13px">Book an appointment →</div>
+  </div>
+  <div class="grow" style="background:var(--navy)"></div>
+</div>
+
+<!-- 2. BOOKING STEP -->
+<div class="shot desk hp col" data-shot="halden-physio/booking">
+  <div class="hnav row center between" style="height:54px">
+    <div class="brand"><i></i>Halden Physio</div>
+    <span style="font-size:11px;color:var(--mut)">Step 2 of 3 · Choose a time</span>
+    <span style="font-size:11px">✕ Close</span>
+  </div>
+  <div class="row" style="padding:28px 40px;gap:30px;flex:1">
+    <div class="col" style="flex:1.5;gap:16px">
+      <div class="steps row"><div class="step on"></div><div class="step on"></div><div class="step"></div></div>
+      <h2 class="serif" style="font-size:30px;font-weight:420;line-height:1.05">When suits you?</h2>
+      <div class="row" style="gap:6px">
+        <div class="day"><span>Mon</span><b>18</b></div><div class="day"><span>Tue</span><b>19</b></div><div class="day on"><span>Wed</span><b>20</b></div><div class="day"><span>Thu</span><b>21</b></div><div class="day"><span>Fri</span><b>22</b></div><div class="day" style="opacity:.45"><span>Sat</span><b>23</b></div>
+      </div>
+      <div class="col" style="gap:8px">
+        <span style="font-size:10.5px;color:var(--mut)">Morning</span>
+        <div class="row" style="gap:8px"><div class="slot grow off">08:20</div><div class="slot grow">09:00</div><div class="slot grow off">10:40</div><div class="slot grow">11:20</div></div>
+        <span style="font-size:10.5px;color:var(--mut);margin-top:6px">Evening</span>
+        <div class="row" style="gap:8px"><div class="slot grow">17:00</div><div class="slot grow on">17:40</div><div class="slot grow">18:20</div><div class="slot grow off">19:00</div></div>
+      </div>
+    </div>
+    <div class="col" style="flex:1;gap:12px">
+      <div class="sum col">
+        <span class="eyebrow">Your appointment</span>
+        <b class="serif" style="font-size:20px;font-weight:480">First assessment</b>
+        <div class="kv"><span>Area</span><b>Back &amp; neck</b></div>
+        <div class="kv"><span>With</span><b>Idris Coleman</b></div>
+        <div class="kv"><span>When</span><b>Wed 20 Nov, 17:40</b></div>
+        <div class="kv" style="border:0"><span>Length</span><b>60 min</b></div>
+      </div>
+      <div class="book" style="height:42px;justify-content:center;font-size:13px;border-radius:12px">Continue to your details →</div>
+      <span style="font-size:10.5px;color:var(--mut);text-align:center">Free to change or cancel up to 24 hours before.</span>
+    </div>
+  </div>
+</div>
+
+<!-- 3. MOBILE HOME -->
+<div class="shot phone hp col" data-shot="halden-physio/mobile">
+  <div class="row center between" style="height:44px;padding:0 22px;font-weight:600;font-size:13px"><span>9:41</span><span style="font-size:11px">●●● ▮</span></div>
+  <div class="row center between" style="padding:6px 20px 14px;border-bottom:1px solid var(--line)"><div class="brand" style="font-size:16px"><i></i>Halden Physio</div><span style="font-size:18px">☰</span></div>
+  <div class="col" style="padding:28px 20px 20px;gap:14px">
+    <div class="eyebrow">Physiotherapy in Eastfield</div>
+    <h1 class="serif" style="font-size:40px;line-height:1.02;font-weight:420">Move without thinking <em style="color:var(--terra)">twice</em> about it.</h1>
+    <p style="font-size:14px;line-height:1.5;color:#3E4A5E">Assessment and treatment for back pain, sports injuries and recovery — explained clearly.</p>
+  </div>
+  <div class="photo" style="margin:0 20px;height:200px">
+    <svg class="figure" viewBox="0 0 350 200" preserveAspectRatio="xMidYMid slice"><rect width="350" height="200" fill="#DCCDB8"/><rect y="140" width="350" height="60" fill="#B9A485"/><circle cx="200" cy="70" r="24" fill="#7A5C48"/><path d="M160 160 C160 110 180 92 200 92 C222 92 240 110 240 160Z" fill="#1C2A42"/><circle cx="90" cy="100" r="18" fill="#5F7B63"/></svg>
+  </div>
+  <div class="col" style="padding:20px;gap:10px">
+    <b class="serif" style="font-size:20px;font-weight:480">Where does it hurt?</b>
+    <div class="area on">Back &amp; neck <span>→</span></div>
+    <div class="area" style="border:1px solid var(--line);background:#fff">Sports injury <span>→</span></div>
+    <div class="area" style="border:1px solid var(--line);background:#fff">Joints <span>→</span></div>
+  </div>
+  <div class="grow"></div>
+  <div style="padding:14px 20px 30px;border-top:1px solid var(--line);background:var(--paper)"><div class="book t" style="height:48px;justify-content:center;width:100%;font-size:14px">Book an appointment</div></div>
+</div>
+
+<!-- 4. SERVICES PAGE -->
+<div class="shot desk hp col" data-shot="halden-physio/services">
+  <div class="hnav row center between">
+    <div class="brand"><i></i>Halden Physio</div>
+    <div class="links row"><span style="color:var(--navy);font-weight:600;border-bottom:1.5px solid var(--terra);padding-bottom:3px">Treatments</span><span>Our team</span><span>What to expect</span><span>Prices</span></div>
+    <div class="book">Book →</div>
+  </div>
+  <div class="row" style="padding:30px 40px;gap:30px;flex:1">
+    <div class="col" style="width:200px;gap:6px">
+      <span class="eyebrow" style="margin-bottom:8px">Choose an area</span>
+      <div class="area on">Back &amp; neck <span>→</span></div>
+      <div class="area">Sports injury</div><div class="area">Knee &amp; hip</div><div class="area">Shoulder</div><div class="area">After surgery</div>
+    </div>
+    <div class="col grow" style="gap:14px">
+      <h2 class="serif" style="font-size:32px;font-weight:420;line-height:1.05">Back &amp; neck pain</h2>
+      <p style="color:#3E4A5E;line-height:1.55;font-size:12.5px;max-width:440px">Most back and neck pain improves with the right advice and movement. We'll work out what's causing yours and give you a plan that fits your routine.</p>
+      <div class="row" style="gap:12px">
+        <div class="tcard col"><h3 class="serif" style="font-size:18px">First assessment</h3><p>Understand what's going on and agree a plan.</p><div class="meta"><span>60 min</span></div></div>
+        <div class="tcard col"><h3 class="serif" style="font-size:18px">Follow-up</h3><p>Treatment and exercises, reviewed each visit.</p><div class="meta"><span>40 min</span></div></div>
+      </div>
+      <div class="sum row between center" style="padding:14px 18px"><div class="col" style="gap:3px"><b style="font-size:12.5px">Not sure which to book?</b><span style="color:var(--mut);font-size:11px">Start with a first assessment — we'll guide you from there.</span></div><div class="book t">Book assessment</div></div>
+    </div>
+  </div>
+</div>
+</body></html>
