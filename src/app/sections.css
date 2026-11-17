@@ -66,6 +66,9 @@ body { position: relative; }
 
 .hero-foot { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 24px 48px; }
 .hero-lane { left: auto; right: calc(var(--gutter) * -0.5 - 1px); top: clamp(-28px, -3vh, -16px); }
+/* Phone start point for the simplified margin line (left gutter, just above the hero copy) */
+.hero-mlane { left: calc(var(--gutter) * -0.5 - 1px); top: -20px; display: none; }
+@media (max-width: 759px), (max-height: 499px) { .hero-mlane { display: block; } .hero-lane { display: none; } }
 .hero-label { color: var(--on-dark-2); margin-bottom: 14px; }
 .tick { display: inline-block; width: 7px; height: 7px; background: var(--volt); margin-right: 12px; vertical-align: 1px; }
 .hero-intro { max-width: 40ch; font-size: clamp(1rem, .4vw + .9rem, 1.2rem); line-height: 1.45; color: var(--ivory); }
@@ -572,7 +575,7 @@ body { position: relative; }
 
 .contact { position: relative; }
 .contact-end { position: absolute; top: -5px; left: calc(var(--gutter) * 0.5 - 5px); width: 10px; height: 10px; background: var(--volt); z-index: 2; }
-@media (max-width: 759px) { .contact-end { display: none; } }
+
 .contact-end.is-hit { animation: nodeHit 1.1s var(--ease-out); }
 
 /* Transformation connector (same grammar and easing as the brand intro) */

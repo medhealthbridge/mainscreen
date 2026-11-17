@@ -47,6 +47,7 @@ export function DataLine() {
     let vw = 0, vh = 0, dpr = 1, headerH = 64;
     let cur = 0, target = 0, raf = 0, lastScroll = -1;
     let width = 1.5;
+    let phone = false;
     let signal: { from: number; to: number; t0: number; dur: number } | null = null;
     let lastActivity = performance.now();
     let idleTimer = 0;
@@ -66,9 +67,11 @@ export function DataLine() {
 
     const build = () => {
       resizeCanvas();
-      enabled = vw >= 760 && vh >= 500; // phones (incl. landscape) get static nodes instead
+      // Phones (incl. landscape) get a simplified line: straight down the left margin,
+      // through the section nodes only — no sideways sweeps, so it can't cross content.
+      phone = vw < 760 || vh < 500;
+      enabled = true;
       test.enabled = enabled;
-      if (!enabled) { path2d = null; samples = []; nodes = []; clear(); return; }
       const sy = window.scrollY, sx = window.scrollX;
       // Layout presence, not painted size (the hero square animates in from scale(0)).
       const anchors = Array.from(document.querySelectorAll<HTMLElement>("[data-line-start], [data-line]")).filter(
@@ -76,7 +79,7 @@ export function DataLine() {
       );
       if (anchors.length < 2) { path2d = null; clear(); return; }
 
-      const pts = anchors.map((el) => {
+      let pts = anchors.map((el) => {
         const r = el.getBoundingClientRect();
         const t = el.dataset?.turn;
         let turnY = NaN;
@@ -91,6 +94,13 @@ export function DataLine() {
         const isLane = el.classList.contains("lane") || el.hasAttribute("data-line-start");
         return { el, x: r.left + r.width / 2 + sx, y: r.top + r.height / 2 + sy, turnY, hMax, isLane };
       }).sort((a, b) => a.y - b.y);
+      if (phone) {
+        // Keep only anchors that sit in the left margin; snap them to one vertical lane.
+        const gutter = parseFloat(getComputedStyle(document.querySelector(".wrap") as Element).paddingLeft) || 16;
+        const laneX = gutter / 2;
+        pts = pts.filter((p) => p.x <= gutter + 1).map((p) => ({ ...p, x: laneX }));
+        if (pts.length < 2) { path2d = null; clear(); return; }
+      }
 
       // Geometry measured directly (fast) — never getPointAtLength (very slow).
       samples = [{ l: 0, x: pts[0].x, y: pts[0].y }];
@@ -178,6 +188,7 @@ export function DataLine() {
       const sy = window.scrollY, sx = window.scrollX;
       const top = sy + headerH, bottom = sy + vh; // never paint under the fixed header
       ctx.setTransform(dpr, 0, 0, dpr, -sx * dpr, -sy * dpr);
+      width = phone ? 1.1 : 1.5;
       ctx.lineWidth = width;
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
@@ -287,7 +298,7 @@ export function DataLine() {
     const scheduleIdle = () => {
       window.clearTimeout(idleTimer);
       idleTimer = window.setTimeout(() => {
-        if (enabled && !reduce && document.visibilityState === "visible" && !signal && performance.now() - lastActivity > 3000 && cur > 200) {
+        if (enabled && !phone && !reduce && document.visibilityState === "visible" && !signal && performance.now() - lastActivity > 3000 && cur > 200) {
           const pt = pointAt(cur);
           const sy = window.scrollY;
           if (pt.y > sy + headerH && pt.y < sy + vh) fire(Math.max(0, cur - 700), cur);

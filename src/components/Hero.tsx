@@ -43,6 +43,7 @@ export function Hero() {
 
         <div className="hero-foot">
           <span className="lane hero-lane" data-line="" aria-hidden="true" />
+          <span className="lane hero-mlane" data-line="" aria-hidden="true" />
           <div className="hero-copy">
             <p className="mono hero-label"><span className="tick" aria-hidden="true" />{hero.label}</p>
             <p className="hero-intro pretty">{hero.intro}</p>
