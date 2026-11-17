@@ -26,9 +26,10 @@ export function Contact() {
   };
   return (
     <section id="contact" className="contact sec-dark" aria-labelledby="contact-title">
+      <span className="contact-end" data-line="" aria-hidden="true" />
       <Marquee />
       <div className="wrap">
-        <p className="mono stage-label"><span className="node" aria-hidden="true" data-line="" />05 — Launch</p>
+        <p className="mono stage-label"><span className="node" aria-hidden="true" />Contact <em>· launch</em></p>
         <h2 id="contact-title" className="display contact-h mask-lines">
           {site.contact.heading.map((l, i) => (
             <span className="ml" key={l} style={{ paddingLeft: i === 1 ? "0.9em" : 0 }}><span style={{ "--i": i } as React.CSSProperties}>{l}</span></span>

@@ -12,7 +12,14 @@
  * Replace them with your projects, and set `status` and `sampleData` honestly.
  */
 
-export type Status = "Live" | "In development" | "Concept";
+/**
+ * Be precise about what exists:
+ * - "Visual concept"       — designed screens only, nothing runs.
+ * - "Functional prototype" — a working demo with sample data.
+ * - "In development"       — being built for real use.
+ * - "Live"                 — launched and in use.
+ */
+export type Status = "Visual concept" | "Functional prototype" | "In development" | "Live";
 export type Need = "website" | "manual" | "system" | "unsure";
 export type Offering = "Website" | "Business system";
 
@@ -42,11 +49,15 @@ export interface Project {
   year: string;
   /** One-sentence summary for the index and link previews. */
   summary: string;
+  /** One-line versions shown on the homepage; the case study carries the detail. */
+  brief: { problem: string; solution: string };
   problem: string;
   built: string;
   role: string[];
   /** Only set when a working demo exists. Leave undefined to hide the link. */
   demoUrl?: string;
+  /** Only set when a real recorded walkthrough exists (e.g. "/work/<slug>/walkthrough.mp4"). */
+  walkthroughUrl?: string;
   /** Which "What's slowing you down?" answers this project is relevant to. */
   needs: Need[];
   images: ProjectImage[];
@@ -89,11 +100,15 @@ export const projects: Project[] = [
     offering: "Business system",
     category: "Job & crew management system",
     serves: "A home-services company with an office team and field crews",
-    status: "Concept",
+    status: "Visual concept",
     sampleData: true,
     year: "2026",
     summary:
       "One place for every job — from the first phone call to the paid invoice.",
+    brief: {
+      problem: "Jobs arrive everywhere and get re-typed; invoices go out late.",
+      solution: "One job record from request to invoice, with a phone checklist for crews.",
+    },
     problem:
       "Jobs arrive by phone, text, email and web form. The office re-types each one into a spreadsheet and a whiteboard, crews call in for addresses, and invoices go out days after the work is done.",
     built:
@@ -148,11 +163,15 @@ export const projects: Project[] = [
     offering: "Website",
     category: "Clinic website & booking journey",
     serves: "An independent physiotherapy clinic and its new patients",
-    status: "Concept",
+    status: "Visual concept",
     sampleData: true,
     year: "2026",
     summary:
       "A clinic website that helps people find the right treatment and book it in three steps.",
+    brief: {
+      problem: "Visitors can't match their problem to a treatment, and booking needs a phone call.",
+      solution: "Plain-language treatment pages and a three-step online booking journey.",
+    },
     problem:
       "Treatments were listed in clinical terms, so visitors couldn't tell which one fit their problem. Booking meant phoning during opening hours — and most people browse in the evening.",
     built:
@@ -207,11 +226,15 @@ export const projects: Project[] = [
     offering: "Business system",
     category: "Client portal & records",
     serves: "A small bookkeeping practice and its business clients",
-    status: "Concept",
+    status: "Visual concept",
     sampleData: true,
     year: "2026",
     summary:
       "A client portal that replaces month-end email chains with one clear list of what's needed.",
+    brief: {
+      problem: "Month-end runs on email chains and nobody can see who is blocking.",
+      solution: "A client portal of outstanding requests, plus month-end status for every client.",
+    },
     problem:
       "Month-end runs on email: chasing receipts, 'did you get my statement?', files saved in five places. Nobody can see at a glance which clients are ready and which are blocking.",
     built:
@@ -263,9 +286,10 @@ export const projects: Project[] = [
 ];
 
 export const statusNote: Record<Status, string> = {
-  Live: "Launched and in use.",
+  "Visual concept": "Designed screens with fictional sample data — not a client engagement, nothing deployed.",
+  "Functional prototype": "A working prototype with sample data.",
   "In development": "Currently being built. Screens show the work in progress.",
-  Concept: "Concept project with fictional sample data — not a client engagement.",
+  Live: "Launched and in use.",
 };
 
 export const getProject = (slug: string) => projects.find((p) => p.slug === slug);

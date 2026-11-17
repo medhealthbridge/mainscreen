@@ -21,24 +21,33 @@ You don't need to touch layout code to update text, projects or contact details.
 - `wordmark` — the two words either side of the yellow-green bar, e.g. `["DATA", "BRIDGE"]`.
 - `email` — shown on the page and used by the email fallback.
 - `url` — your live domain (no trailing slash). Used for link previews.
-- `links` — optional profile links (LinkedIn, GitHub…). Leave empty to hide.
+- `links` — your public profile links (LinkedIn, GitHub…). They appear in About and the footer. Leave empty to hide.
+- `about` — the introduction. Add your public name there when you want it shown.
 - `hero`, `about`, `contact` — the main copy.
 
 ### Make the contact form send messages
 
-By default `formEndpoint` is empty, so the form runs in **email-draft mode**: it opens a
-pre-filled email to your address and says clearly on the page that nothing is sent from
-the site. It never pretends a message was sent.
+The form posts to the site's own server route, `src/app/api/contact/route.ts`, which
+validates every field again on the server, checks a hidden honeypot field and a minimum
+fill time, rate-limits repeated sends, and hands the message to **Resend**
+(https://resend.com). The browser never sees any credentials.
 
-To receive submissions directly:
+Until it's configured, the form stays in its honest **email-draft mode**: it opens a
+pre-filled email to your address and says so on the page. It never pretends a message was sent.
 
-1. Create a form at a form backend that accepts JSON — e.g. Formspree (`https://formspree.io`), Getform or Basin.
-2. Paste its endpoint into `formEndpoint`, e.g. `formEndpoint: "https://formspree.io/f/abcdwxyz"`.
-3. Rebuild. The form now shows real *Sending… / sent / couldn't send* states based on the server's response.
-   If the server returns an error, the visitor keeps their text and gets an email link instead.
+To switch on real sending, add these **environment variables in Vercel**
+(Project → Settings → Environment Variables), then redeploy:
 
-The form posts: `name, email, message, service, timeline, budget, _subject, _replyto` and a
-hidden `_gotcha` spam-trap field.
+| Variable | Required | Value |
+| --- | --- | --- |
+| `RESEND_API_KEY` | yes | Your Resend API key (`re_…`) |
+| `CONTACT_FROM` | recommended | A sender on a domain you've verified in Resend, e.g. `DataBridge <hello@yourdomain.com>`. Without it, Resend's test sender is used, which only delivers to the email that owns the Resend account. |
+| `CONTACT_TO` | optional | Where inquiries go (defaults to `email` in `site.ts`) |
+
+The form shows "received" only after Resend confirms it accepted the message. If anything
+fails, visitors keep what they typed and get a ready-made email link instead.
+
+(Alternative for other hosts: put a Formspree-style URL in `formEndpoint` in `site.ts`.)
 
 ---
 
@@ -55,10 +64,14 @@ For each project set:
 
 - `slug` — URL name, e.g. `"clinic-booking"` → `/work/clinic-booking/`.
 - `name`, `offering` (`"Website"` or `"Business system"`), `category`, `serves`, `year`, `summary`.
-- `status` — be honest: `"Live"`, `"In development"` or `"Concept"`.
+- `status` — be precise: `"Visual concept"` (designed screens only), `"Functional prototype"`
+  (a working demo with sample data), `"In development"` or `"Live"`.
+- `brief.problem` / `brief.solution` — one line each, shown on the homepage. The longer
+  `problem`, `built` and `caseStudy` text appears on the case-study page.
+- `walkthroughUrl` — only if you have a real recorded walkthrough (e.g. an `.mp4` in `public/work/<slug>/`).
 - `sampleData` — `true` if screens use fictional data (shows a notice).
 - `problem`, `built`, `role` — shown in the featured section and the case study.
-- `demoUrl` — **only** if a working demo exists. Leave it out and no demo link is shown.
+- `demoUrl` — **only** if a working prototype or live site exists. Leave it out and no link is shown.
 - `needs` — which "What's slowing your business down?" answers it's relevant to:
   `"website"`, `"manual"`, `"system"`, `"unsure"`.
 - `caseStudy` — `context`, `constraints`, `decisions`, `solution`, `outcome`.
@@ -138,8 +151,10 @@ Opens at http://localhost:3000.
 npm run build
 ```
 
-Writes a static site to `out/`. Upload that folder to any static host (Netlify, Vercel,
-Cloudflare Pages, GitHub Pages, S3…). Update `site.url` first so link previews work.
+Checks that everything builds. The live site is on Vercel (project "databridge") and
+redeploys automatically on every push to the connected branch. Pages are pre-rendered;
+`/api/contact` runs on Vercel's servers. Keep `site.url` set to your live domain so link
+previews work.
 
 To regenerate the social-sharing image after changing the hero, take a 1200 × 630
 screenshot of the top of the page and save it as `public/og.png`.
@@ -148,21 +163,24 @@ screenshot of the top of the page and save it as `public/og.png`.
 
 ## 6. How the signature interactions behave
 
-- **The data line (scroll):** one volt line starts at the accent block after "SMARTER" and
-  draws itself down the page as you scroll (black over light sections). It routes through
-  every element marked `data-line` — section labels, the small square "route" nodes inside
-  each line-art scene, and invisible lanes at the top of light bands. Add `data-line` to any
-  element to make the line pass through it; `data-turn="top"` makes it turn in the empty space
-  at the top of that element's section. Code: `src/components/DataLine.tsx`.
-- **Work stage (pointer images):** the full-screen dark section after the hero. Moving the
-  mouse lays project screenshots along the pointer's path (bigger when you slow down); when
-  you stop, the newest four glide into a resting stack. Screens come from `projects.ts`
-  automatically. The index along the bottom holds the real links; hovering or keyboard-
-  focusing one shows a steady preview. Touch and small screens get a swipe gallery; reduced
-  motion shows the still stack. Code: `src/components/WorkStage.tsx`.
-- **Line-art project scenes:** each featured project has a hand-drawn SVG scene in
-  `src/components/Scenes.tsx`, keyed by project slug in `projectScenes`. A project without a
-  scene automatically shows its screenshots instead, so new projects work straight away.
-  The small paper cards on each scene are plain HTML inside the same file — edit their text there.
-- **Transformation:** autoplays once inside the first project's band, can be paused, and every
-  step is a button with a written caption.
+- **Brand intro** (`BrandIntro.tsx`, styles at the end of `globals.css`): two lime endpoints,
+  a connector, one signal, then the dash of DATA—BRIDGE and the words; it settles into the
+  header in about a second. It plays once per browser session, only on the home page, never
+  for `#deep-links`, and never with reduced motion. The page underneath is live the whole
+  time; any scroll, tap or key press fast-forwards it.
+- **Hero diagram** (`HeroDiagram.tsx`): three loose nodes join and feed the lime square.
+  Shown only where there's room (wide screens).
+- **The data line** (`DataLine.tsx`): starts at the hero's lime square and draws down the
+  page as you scroll, through the side margins and empty section padding. Nodes light up
+  when it reaches them and a small signal travels between them. Off on phones.
+  To route it through an element, add `data-line`; `data-turn="top"` / `"scene"` / `"<px>"`
+  sets where it curves in, and `data-h` limits the curve height. After moving anchors, check at
+  several widths that the line never crosses text, buttons or screenshots.
+- **Work stage** (`WorkStage.tsx`): up to seven screenshots follow the pointer and settle into
+  a stack when it stops. The project index below holds the real links. Touch screens get a
+  swipe gallery with a counter and previous/next buttons.
+- **Enlarged screenshots** (`Lightbox.tsx`): any "Enlarge" button opens the image in an
+  accessible dialog with "Actual size" for inspecting details; Escape closes it.
+- **Transformation demo** (`Transformation.tsx`, text in `content/transformation.ts`):
+  Scattered → Structured → Scheduled → Completed. Autoplays once; clicking a step stops it;
+  Replay restarts it. Reduced motion shows a static, step-by-step version.

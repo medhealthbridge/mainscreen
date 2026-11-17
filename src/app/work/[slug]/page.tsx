@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { projects, getProject, statusNote } from "@/content/projects";
 import { site } from "@/content/site";
 import { Frame, Phone } from "@/components/Media";
+import { ZoomButton } from "@/components/Lightbox";
 import "../casestudy.css";
 
 export const dynamicParams = false;
@@ -92,7 +93,7 @@ export default async function CaseStudy({ params }: { params: Promise<{ slug: st
           {p.status !== "Live" && (
             <p className="cs-banner" role="note">
               <span className="status" data-status={p.status}>{p.status}</span>
-              <span>{statusNote[p.status]}{p.sampleData && p.status !== "Concept" ? " Screens use sample data." : ""}</span>
+              <span>{statusNote[p.status]}{p.sampleData && p.status !== "Visual concept" ? " Screens use sample data." : ""}</span>
             </p>
           )}
 
@@ -110,7 +111,10 @@ export default async function CaseStudy({ params }: { params: Promise<{ slug: st
 
       <div className="cs-cover sec-dark">
         <div className="wrap cs-cover-inner">
-          <Frame im={cover} label={p.name} priority scroll={cover.kind === "page"} />
+          <div className="cs-zoomwrap">
+            <Frame im={cover} label={p.name} priority scroll={cover.kind === "page"} />
+            <ZoomButton im={cover} className="cs-zoom" label="Enlarge screenshot" />
+          </div>
           {tall[0] && <Phone im={tall[0]} className="cs-cover-phone" />}
         </div>
       </div>
@@ -128,10 +132,11 @@ export default async function CaseStudy({ params }: { params: Promise<{ slug: st
             <section className="cs-gallery" aria-label="More screens">
               {rest.map((im, i) =>
                 im.kind === "mobile" ? (
-                  <div key={im.src} className="cs-g cs-g-tall" data-reveal><Phone im={im} /></div>
+                  <div key={im.src} className="cs-g cs-g-tall cs-zoomwrap" data-reveal><Phone im={im} /><ZoomButton im={im} className="cs-zoom" /></div>
                 ) : (
-                  <div key={im.src} className={`cs-g ${i % 2 ? "cs-g-r" : "cs-g-l"}`} data-reveal>
+                  <div key={im.src} className={`cs-g cs-zoomwrap ${i % 2 ? "cs-g-r" : "cs-g-l"}`} data-reveal>
                     <Frame im={im} label={p.name} scroll={im.kind === "page"} />
+                    <ZoomButton im={im} className="cs-zoom" label="Enlarge screenshot" />
                     <p className="mono-sm muted cs-cap">{im.alt}</p>
                   </div>
                 ),

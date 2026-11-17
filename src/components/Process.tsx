@@ -2,9 +2,9 @@ import { process } from "@/content/services";
 
 export function Process() {
   return (
-    <section id="process" className="proc-sec sec-dark" aria-labelledby="process-title">
+    <section id="process" className="proc-sec sec-light" aria-labelledby="process-title">
       <div className="wrap">
-        <p className="mono stage-label"><span className="node" aria-hidden="true" data-line="" />How we work</p>
+        <p className="mono stage-label"><span className="node" aria-hidden="true" data-line="" />How we work together <em>· system</em></p>
         <h2 id="process-title" className="display-2 mask-lines">
           <span className="ml"><span style={{ "--i": 0 } as React.CSSProperties}>Four steps.</span></span>
           <span className="ml" style={{ paddingLeft: "0.9em" }}><span style={{ "--i": 1 } as React.CSSProperties}>No surprises.</span></span>

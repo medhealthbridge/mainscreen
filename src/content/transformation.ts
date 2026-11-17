@@ -10,23 +10,23 @@ export const transformation = {
   steps: [
     {
       label: "Scattered",
-      title: "Requests arrive everywhere.",
+      title: "Scattered messages.",
       body: "Texts, emails, voicemails and sticky notes. Someone retypes each one into a spreadsheet — or it slips through.",
     },
     {
-      label: "Organised",
-      title: "Every request becomes one job.",
-      body: "Each message turns into a structured job in a shared pipeline, so the whole team sees the same week.",
+      label: "Structured",
+      title: "Each one becomes a structured job.",
+      body: "Every message turns into a job with the same fields — customer, address, time, crew — in one shared pipeline.",
     },
     {
-      label: "Usable",
-      title: "The crew gets exactly what they need.",
-      body: "One job, one screen: address, gate code, notes and a checklist. No calls back to the office.",
+      label: "Scheduled",
+      title: "Scheduled into the workflow.",
+      body: "The job is assigned a crew and a time. The crew's phone shows the address, gate code and a checklist — no calls back to the office.",
     },
     {
-      label: "Done",
-      title: "Finished means finished.",
-      body: "Marking the job done drafts the invoice and tells the customer. Nothing is typed twice.",
+      label: "Completed",
+      title: "Completed — and nothing typed twice.",
+      body: "Marking the job done drafts the invoice and tells the customer automatically.",
     },
   ],
   columns: ["New", "Scheduled", "In progress", "Done"],

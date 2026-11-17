@@ -14,7 +14,7 @@ export function SmoothScroll() {
       lerp: 0.09,
       smoothWheel: true,
       wheelMultiplier: 1,
-      anchors: { offset: -72 },
+      anchors: true, // Lenis already honours the page's scroll-padding-top (header height)
       autoRaf: true,
       // Let the horizontal swipe galleries scroll natively.
       prevent: (node) => !!node.closest?.(".ws-gallery"),

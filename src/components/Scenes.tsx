@@ -30,29 +30,6 @@ const T = (x: number, y: number, s: string, size = 11, anchor: "start" | "middle
   <text x={x} y={y} className="lt" fontSize={size} textAnchor={anchor}>{s}</text>
 );
 
-/* ---------------- Intro: scattered → one system ---------------- */
-export function IntroScene() {
-  return (
-    <Scene vb="0 0 640 600" label="Line drawing: sticky notes, messages, an email and a spreadsheet connect into one organised system.">
-      <g transform="rotate(-8 90 95)"><rect {...P} x="30" y="40" width="120" height="110" /><path {...P} d="M48 70 H130 M48 88 H118 M48 106 H126 M48 124 H100" /></g>
-      <g transform="rotate(7 235 75)"><rect {...P} x="180" y="22" width="110" height="100" /><path {...P} d="M196 50 H272 M196 68 H262 M196 86 H240" /></g>
-      <path {...P} d="M40 222 H190 V290 H90 L70 312 V290 H40 Z" /><path {...P} d="M58 246 H170 M58 266 H140" />
-      <rect {...P} x="226" y="190" width="132" height="88" /><path {...P} d="M226 190 L292 238 L358 190" />
-      <g><rect {...P} x="56" y="352" width="200" height="104" /><path {...P} d="M56 378 H256 M56 404 H256 M56 430 H256 M106 352 V456 M156 352 V456 M206 352 V456" /></g>
-      {T(216, 425, "???", 12, "middle")}
-      <path {...P} className="d thin" d="M150 98 H404 V250" /><path {...P} className="d thin" d="M290 72 H436 V250" />
-      <path {...P} className="d thin" d="M190 256 H404" /><path {...P} className="d thin" d="M358 234 H388 V256" />
-      <path {...P} className="d thin" d="M256 404 H404 V300" />
-      <rect {...P} x="404" y="236" width="210" height="236" />
-      <path {...P} d="M404 262 H614 M446 262 V472" />
-      <rect {...P} x="458" y="276" width="66" height="44" /><rect {...P} x="534" y="276" width="66" height="44" />
-      <path {...P} d="M458 340 H600 M458 366 H600 M458 392 H600 M458 418 H600 M458 444 H600" />
-      <rect x="398" y="230" width="12" height="12" className="node-fill" data-line="" data-turn="top" />
-      {T(40, 172, "NOTES", 10)}{T(40, 334, "MESSAGES", 10)}{T(226, 300, "EMAILS", 10)}{T(56, 478, "SPREADSHEETS", 10)}{T(404, 498, "ONE SYSTEM", 10)}
-    </Scene>
-  );
-}
-
 /* ---------------- Fieldbook ---------------- */
 function FieldbookScene() {
   return (
@@ -61,7 +38,7 @@ function FieldbookScene() {
       label="Line drawing: a service van follows a route to a customer's house while a phone shows the crew checklist."
       cards={
         <>
-          <Card left="33%" top="6%" width="23%" r={-3}>
+          <Card left="31%" top="15%" width="23%" r={-3}>
             <span className="sc-k">Job · J-2318</span>
             <b>Boiler service</b>
             <span>14 Larch Close</span>
@@ -86,7 +63,8 @@ function FieldbookScene() {
       <circle {...P} cx="362" cy="472" r="30" /><circle {...P} cx="362" cy="472" r="11" />
       {T(70, 528, "CREW A · VAN 2", 11)}{T(250, 528, "EN ROUTE · 6 MIN", 11)}
       <path {...P} className="d dash" d="M440 420 H520 V236 H880 V392 H930" />
-      <rect x="516" y="232" width="8" height="8" className="node-fill" data-line="" data-turn="top" /><rect x="876" y="232" width="8" height="8" className="node-fill" />
+      <rect x="516" y="232" width="8" height="8" className="node-fill" />
+      <rect x="676" y="232" width="8" height="8" className="node-fill" data-line="" data-turn="scene" data-h="40" /><rect x="876" y="232" width="8" height="8" className="node-fill" />
       <path {...P} d="M932 472 V332 L1032 256 L1132 332 V472" />
       <rect {...P} x="1012" y="402" width="40" height="70" /><rect {...P} x="956" y="352" width="40" height="34" /><rect {...P} x="1068" y="352" width="40" height="34" />
       <path {...P} d="M1092 302 V262 H1112 V316" />
@@ -161,7 +139,8 @@ function HaldenScene() {
       {["M", "T", "W", "T", "F", "S", "S"].map((d, i) => <text key={i} x={796 + i * 49} y={178} className="lt lt-dim" fontSize="10" textAnchor="middle">{d}</text>)}
       {cells}
       <path {...P} className="d dash" d="M210 338 V530 H700" /><path {...P} className="d dash" d="M967 430 V470" />
-      <rect x="206" y="526" width="8" height="8" className="node-fill" data-line="" data-turn="top" />
+      <rect x="206" y="526" width="8" height="8" className="node-fill" />
+      <rect x="436" y="526" width="8" height="8" className="node-fill" data-line="" data-turn="scene" data-h="40" />
       <rect x="632" y="256" width="146" height="286" rx="22" className="occlude" />
       <rect {...P} x="632" y="256" width="146" height="286" rx="22" />
       <path {...P} className="d thick" d="M652 312 H742 M652 336 H720" />
@@ -211,7 +190,7 @@ function LedgerroomScene() {
       <path {...P} d="M428 206 H522 M428 230 H500 M428 254 H512 M428 278 H490 M428 302 H506" />
       {T(428, 350, "TOTAL", 10)}{T(522, 350, "248.00", 10, "end")}
       <path {...P} className="d dash" d="M540 300 H600 V206 H660" /><path {...P} d="M650 198 L662 206 L650 214" />
-      <rect x="596" y="296" width="8" height="8" className="node-fill" data-line="" data-turn="top" />
+      <rect x="596" y="296" width="8" height="8" className="node-fill" data-line="" data-turn="scene" data-h="40" />
       <rect {...P} x="660" y="110" width="470" height="380" rx="6" />
       <path {...P} d="M660 142 H1130" /><circle {...P} cx="680" cy="126" r="4" /><circle {...P} cx="694" cy="126" r="4" /><circle {...P} cx="708" cy="126" r="4" />
       {T(690, 176, "OUTSTANDING · COPPERLEAF CAFÉ", 11)}

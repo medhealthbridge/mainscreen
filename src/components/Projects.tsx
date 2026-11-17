@@ -1,9 +1,9 @@
 import { projects, statusNote, type Project } from "@/content/projects";
 import { transformation } from "@/content/transformation";
-import { site } from "@/content/site";
 import { projectScenes } from "./Scenes";
 import { Frame, Phone } from "./Media";
 import { Transformation } from "./Transformation";
+import { ZoomButton } from "./Lightbox";
 
 function FallbackScene({ p }: { p: Project }) {
   const wide = p.images.filter((i) => i.kind !== "mobile");
@@ -24,9 +24,6 @@ function ProjectFeature({ p, n }: { p: Project; n: number }) {
   return (
     <>
       <article className="pj sec-dark" id={`project-${p.slug}`} aria-labelledby={`pj-${p.slug}`}>
-        {n === 1 && (
-          <div className="wrap"><p className="mono stage-label pj-stage"><span className="node" aria-hidden="true" />04 — System</p></div>
-        )}
         <div className="wrap pj-head">
           <p className="mono pj-k">{String(n).padStart(2, "0")} / {p.category}</p>
           <p className="mono pj-desc">{p.summary}</p>
@@ -38,24 +35,26 @@ function ProjectFeature({ p, n }: { p: Project; n: number }) {
       </article>
 
       <section className="pj-band sec-light" aria-labelledby={`pj-${p.slug}`}>
-        <span className="lane" data-line="" data-turn="110" aria-hidden="true" />
+        <span className="lane" data-line="" data-turn="40" data-h="36" aria-hidden="true" />
         <div className="wrap pj-band-grid">
           <div className="pj-info" data-reveal>
             <h3 id={`pj-${p.slug}`} className="display-3">{p.name}</h3>
+            <p className="pj-for muted">{p.serves}</p>
             <dl className="pj-facts">
-              <div><dt className="mono-sm">For</dt><dd>{p.serves}</dd></div>
-              <div><dt className="mono-sm">Problem</dt><dd>{p.problem}</dd></div>
-              <div><dt className="mono-sm">Built</dt><dd>{p.built}</dd></div>
+              <div><dt className="mono-sm">Problem</dt><dd>{p.brief.problem}</dd></div>
+              <div><dt className="mono-sm">Solution</dt><dd>{p.brief.solution}</dd></div>
               <div><dt className="mono-sm">Role</dt><dd>{p.role.join(" · ")}</dd></div>
-              <div><dt className="mono-sm">Status</dt><dd><span className="status" data-status={p.status}>{p.status}</span> <span className="muted">{statusNote[p.status]}</span></dd></div>
+              <div><dt className="mono-sm">Status</dt><dd><span className="status" data-status={p.status}>{p.status}</span> <span className="pj-note muted">{statusNote[p.status]}</span></dd></div>
             </dl>
             <div className="pj-links">
               <a href={`/work/${p.slug}/`} className="explore mono">Explore project <span aria-hidden="true">↗</span><span className="visually-hidden"> — {p.name} case study</span></a>
-              {p.demoUrl && <a href={p.demoUrl} className="explore mono" target="_blank" rel="noopener">Live demo <span aria-hidden="true">↗</span></a>}
+              {p.demoUrl && <a href={p.demoUrl} className="explore mono" target="_blank" rel="noopener">{p.status === "Live" ? "Live site" : "Open prototype"} <span aria-hidden="true">↗</span></a>}
+              {p.walkthroughUrl && <a href={p.walkthroughUrl} className="explore mono">Watch walkthrough <span aria-hidden="true">▸</span></a>}
             </div>
           </div>
           <div className="pj-shot" data-reveal="scale">
             <Frame im={page ?? second ?? cover} label={p.name} scroll={!!page} />
+            <ZoomButton im={page ?? second ?? cover} className="pj-zoom" label="Enlarge screenshot" />
           </div>
         </div>
         {transformation.projectSlug === p.slug && <div className="wrap"><Transformation /></div>}
@@ -68,12 +67,6 @@ export function Projects() {
   return (
     <div id="featured">
       {projects.slice(0, 3).map((p, i) => <ProjectFeature key={p.slug} p={p} n={i + 1} />)}
-      <section className="sec-dark cta-strip" aria-label="Start a project">
-        <div className="wrap cta-band">
-          <h2 className="display-3 balance">Recognise one of these problems?</h2>
-          <a href="#contact" className="btn btn-primary">{site.hero.primaryCta} <span className="arr" aria-hidden="true">→</span></a>
-        </div>
-      </section>
     </div>
   );
 }

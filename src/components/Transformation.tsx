@@ -10,11 +10,13 @@ import { transformation as T } from "@/content/transformation";
  */
 
 type P = [x: number, y: number, r?: number];
+/** Time on each step while autoplaying — long enough to read the caption. */
+const DUR = [3400, 4200, 4400, 4400];
 
 const WIDE = {
-  scatter: [[3, 6, -6], [55, 3, 4], [30, 34, 3], [71, 40, -4], [7, 60, 5], [45, 70, -2.5]] as P[],
+  scatter: [[3, 5, -6], [55, 3, 4], [30, 34, 3], [71, 40, -4], [7, 62, 5], [45, 70, -2.5]] as P[],
   colX: [1.5, 26, 50.5, 75],
-  rowY: [12, 32, 52, 72],
+  rowY: [14, 39, 64, 89],
 };
 const NARROW = {
   scatter: [[3, 3, -5], [50, 9, 4], [12, 28, 3], [48, 39, -4], [5, 56, 5], [42, 72, -2]] as P[],
@@ -26,12 +28,15 @@ export function Transformation() {
   const [step, setStep] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [narrow, setNarrow] = useState(false);
+  const [size, setSize] = useState({ w: 0, h: 0 });
+  const [link, setLink] = useState<{ a: { x: number; y: number }; b: { x: number; y: number }; key: number } | null>(null);
   const started = useRef(false);
+  const prevStep = useRef(0);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const ro = new ResizeObserver(([e]) => setNarrow(e.contentRect.width < 620));
+    const ro = new ResizeObserver(([e]) => { setNarrow(e.contentRect.width < 620); setSize({ w: e.contentRect.width, h: e.contentRect.height }); });
     ro.observe(el);
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const io = new IntersectionObserver(
@@ -50,15 +55,15 @@ export function Transformation() {
   useEffect(() => {
     if (!playing) return;
     if (step >= T.steps.length - 1) { setPlaying(false); return; }
-    const t = window.setTimeout(() => setStep((s) => s + 1), step === 0 ? 2400 : 3200);
+    const t = window.setTimeout(() => setStep((s) => s + 1), DUR[step]);
     return () => window.clearTimeout(t);
   }, [playing, step]);
 
   const go = (i: number) => { setPlaying(false); setStep(i); };
   const replay = () => { setStep(0); setPlaying(true); };
 
-  // Position of each item for the current step.
-  const pos = (i: number): P => {
+  // Position of each item for a given step.
+  const posAt = (i: number, step: number): P => {
     const it = T.items[i];
     if (step === 0) return narrow ? NARROW.scatter[i] : WIDE.scatter[i];
     if (narrow) {
@@ -70,6 +75,22 @@ export function Transformation() {
     const sameCol = T.items.filter((x, j) => x.col === it.col && j < i && !(step === 3 && j === 0)).length;
     return [WIDE.colX[it.col], WIDE.rowY[sameCol]];
   };
+  const pos = (i: number) => posAt(i, step);
+
+  // Connector for the job we follow: endpoints → path → one signal (same grammar as the intro).
+  useEffect(() => {
+    const from = prevStep.current;
+    prevStep.current = step;
+    if (from === step || !size.w) return;
+    const bw = narrow ? 45 : 23.5, bh = narrow ? 15 : 21;
+    const centre = (st: number) => { const [x, y] = posAt(0, st); return { x: ((x + bw / 2) / 100) * size.w, y: ((y + bh / 2) / 100) * size.h }; };
+    const panelPoint = narrow ? { x: 0.52 * size.w, y: 0.27 * size.h } : { x: 0.765 * size.w, y: 0.38 * size.h };
+    const a = from === 2 && step !== 2 ? panelPoint : centre(from);
+    const b = step === 2 ? panelPoint : centre(step);
+    setLink({ a, b, key: Date.now() });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
+  const linkPath = link ? `M${link.a.x.toFixed(1)} ${link.a.y.toFixed(1)} C${link.a.x.toFixed(1)} ${((link.a.y + link.b.y) / 2).toFixed(1)} ${link.b.x.toFixed(1)} ${((link.a.y + link.b.y) / 2).toFixed(1)} ${link.b.x.toFixed(1)} ${link.b.y.toFixed(1)}` : "";
   const statusOf = (i: number) => {
     if (i === 0 && step === 3) return "Done";
     return T.columns[T.items[i].col];
@@ -91,7 +112,7 @@ export function Transformation() {
               onClick={() => go(i)}
             >
               <span className="mono-sm">0{i + 1}</span> {st.label}
-              {i === step && playing && <i className="tf-prog" style={{ animationDuration: step === 0 ? "2400ms" : "3200ms" }} />}
+              {i === step && playing && <i className="tf-prog" style={{ animationDuration: `${DUR[step]}ms` }} />}
             </button>
           ))}
           <button type="button" className="tf-ctl mono-sm" onClick={playing ? () => setPlaying(false) : replay}>
@@ -162,6 +183,15 @@ export function Transformation() {
             </div>
           );
         })}
+
+        {link && size.w > 0 && (
+          <div className="tf-link" key={link.key}>
+            <svg width={size.w} height={size.h} viewBox={`0 0 ${size.w} ${size.h}`}><path pathLength={1} d={linkPath} /></svg>
+            <span className="tf-end" style={{ left: link.a.x, top: link.a.y }} />
+            <span className="tf-end" style={{ left: link.b.x, top: link.b.y, animationDelay: "40ms" }} />
+            <span className="tf-sig" style={{ offsetPath: `path('${linkPath}')` }} />
+          </div>
+        )}
 
         <div className="tf-toast"><i /> {T.detail.toast}</div>
         <span className="tf-sample mono-sm">Fictional sample data</span>

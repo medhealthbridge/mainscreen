@@ -1,7 +1,8 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { projects, type ProjectImage } from "@/content/projects";
 import { useNeed } from "./NeedContext";
+import { ZoomButton } from "./Lightbox";
 
 /**
  * WORK STAGE — full-screen pointer trail of project screens.
@@ -10,8 +11,8 @@ import { useNeed } from "./NeedContext";
  * Imperative DOM only (no React renders on pointer move). Decorative: real links live in the index.
  */
 
-const POOL = 14;
-const MAX_VISIBLE = 12;
+const POOL = 10;
+const MAX_VISIBLE = 7;
 const SLOTS = [
   { dx: -0.07, dy: 0.05, r: -5 },
   { dx: 0.06, dy: -0.03, r: 4 },
@@ -62,8 +63,8 @@ export function WorkStage() {
     let next = 0, imgIdx = 0, z = 10, acc = 0, idle = 0;
     let last: { x: number; y: number; t: number } | null = null;
 
-    const T_MOVE = "transform 950ms var(--ease-out), opacity 420ms var(--ease-out)";
-    const T_SETTLE = "transform 1150ms var(--ease-out), opacity 700ms var(--ease-out)";
+    const T_MOVE = "transform 700ms var(--ease-out), opacity 380ms var(--ease-out)";
+    const T_SETTLE = "transform 1000ms var(--ease-out), opacity 600ms var(--ease-out)";
     const put = (c: Card, depth = 0, extraScale = 1) => {
       c.el.style.transform = `translate3d(${c.x - c.w / 2}px, ${c.y - c.h / 2}px, ${depth}px) rotate(${c.r}deg) scale(${c.s * extraScale})`;
     };
@@ -102,12 +103,12 @@ export function WorkStage() {
       const c = cards[next++ % POOL];
       const im = pool[imgIdx++ % pool.length];
       active = active.filter((a) => a !== c);
-      const base = Math.min(380, Math.max(190, rect.width * 0.2));
+      const base = Math.min(420, Math.max(220, rect.width * 0.24));
       const tall = im.kind === "mobile";
       c.w = tall ? base * 0.48 : base;
       c.h = tall ? c.w * (im.height / im.width) : base * 0.625;
       const slow = 1 - Math.min(1, speed / 1.8);
-      c.s = 0.9 + slow * 0.5;
+      c.s = 0.92 + slow * 0.3;
       const hw = (c.w * c.s) / 2, hh = (c.h * c.s) / 2;
       c.x = Math.min(rect.width - hw, Math.max(hw, x));
       c.y = Math.min(rect.height - hh, Math.max(hh, y));
@@ -116,7 +117,7 @@ export function WorkStage() {
       c.el.dataset.kind = im.kind;
       c.el.style.width = `${c.w}px`; c.el.style.height = `${c.h}px`;
       // Entrance via the Web Animations API — no forced layout, stays on the compositor.
-      const from = `translate3d(${c.x - c.w / 2 - dx * 0.8}px, ${c.y - c.h / 2 - dy * 0.8}px, 80px) rotate(${c.r * 0.3}deg) scale(${c.s * 0.7})`;
+      const from = `translate3d(${c.x - c.w / 2 - dx * 0.35}px, ${c.y - c.h / 2 - dy * 0.35}px, 40px) rotate(${c.r * 0.5}deg) scale(${c.s * 0.86})`;
       c.el.getAnimations().forEach((a) => a.cancel());
       c.el.style.transition = "none";
       c.el.style.zIndex = String(++z);
@@ -124,7 +125,7 @@ export function WorkStage() {
       put(c);
       c.el.animate(
         [{ transform: from, opacity: 0 }, { transform: c.el.style.transform, opacity: 1 }],
-        { duration: 950, easing: "cubic-bezier(0.16, 1, 0.3, 1)" },
+        { duration: 560, easing: "cubic-bezier(0.16, 1, 0.3, 1)" },
       );
       active.push(c);
       if (active.length > MAX_VISIBLE) { const o = active.shift()!; o.el.style.opacity = "0"; }
@@ -133,11 +134,14 @@ export function WorkStage() {
         const age = n - 1 - i;
         if (age === 0) return;
         a.el.style.transition = T_MOVE;
-        a.el.style.opacity = String(Math.max(0.12, 1 - age * 0.075));
-        put(a, -age * 26, 1 - age * 0.012);
+        a.el.style.opacity = String(Math.max(0.22, 1 - age * 0.12));
+        // Older cards recede: a little smaller, dimmer, and turned slightly further.
+        const sc = a.s * (1 - age * 0.035);
+        const rot = a.r + Math.sign(a.r || 1) * age * 0.7;
+        a.el.style.transform = `translate3d(${a.x - a.w / 2}px, ${a.y - a.h / 2}px, ${-age * 18}px) rotate(${rot}deg) scale(${sc})`;
       });
       window.clearTimeout(idle);
-      idle = window.setTimeout(() => settle(), 900);
+      idle = window.setTimeout(() => settle(), 700);
     };
 
     const onMove = (e: PointerEvent) => {
@@ -147,7 +151,7 @@ export function WorkStage() {
       if (!last) { last = { x, y, t }; return; }
       const dx = x - last.x, dy = y - last.y, d = Math.hypot(dx, dy);
       acc += d;
-      const threshold = Math.max(38, rect.width * 0.032);
+      const threshold = Math.max(72, rect.width * 0.06);
       if (acc >= threshold) {
         const speed = acc / Math.max(16, t - last.t);
         const k = threshold / Math.max(d, 1);
@@ -237,25 +241,11 @@ export function WorkStage() {
           </div>
         </div>
 
-        <div className="ws-gallery" role="region" aria-label="Project screens" tabIndex={0}>
-          <ul>
-            {interleave().filter((i) => i.kind !== "mobile").map((im) => {
-              const p = projects.find((x) => im.src.startsWith(`/work/${x.slug}/`))!;
-              return (
-                <li key={im.src}>
-                  <a href={`/work/${p.slug}/`}>
-                    <img src={im.thumb} alt={im.alt} width={640} height={400} loading="lazy" decoding="async" />
-                    <span className="mono-sm">{p.name} — {p.category}</span>
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+        <Gallery />
 
         <div className="wrap ws-bottom">
           <div className="ws-meta">
-            <h2 id="work-title" className="mono"><span className="tick" aria-hidden="true" data-line="" />Selected work</h2>
+            <h2 id="work-title" className="mono"><span className="tick" aria-hidden="true" data-line="" data-turn="118" data-h="34" />Selected work <em>· connection</em></h2>
             <p className="mono-sm ws-hint" aria-hidden="true">Move to explore the work</p>
           </div>
           <ol className="ws-index" ref={indexRef}>
@@ -276,5 +266,60 @@ export function WorkStage() {
         </div>
       </div>
     </section>
+  );
+}
+
+/**
+ * Touch / small-screen gallery: native horizontal swipe (vertical page scroll untouched),
+ * the next card's edge stays visible, plus a position indicator and previous/next buttons.
+ */
+function Gallery() {
+  const ulRef = useRef<HTMLUListElement>(null);
+  const [index, setIndex] = useState(0);
+  const items = interleave().filter((i) => i.kind !== "mobile");
+
+  useEffect(() => {
+    const ul = ulRef.current;
+    if (!ul) return;
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => { if (e.isIntersecting) setIndex(Number((e.target as HTMLElement).dataset.i)); }),
+      { root: ul, threshold: 0.6 },
+    );
+    ul.querySelectorAll("li").forEach((li) => io.observe(li));
+    return () => io.disconnect();
+  }, []);
+
+  const go = (d: number) => {
+    const ul = ulRef.current;
+    const li = ul?.children[Math.max(0, Math.min(items.length - 1, index + d))] as HTMLElement | undefined;
+    if (!ul || !li) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    ul.scrollTo({ left: li.offsetLeft - ul.offsetLeft - parseFloat(getComputedStyle(ul).paddingLeft || "0"), behavior: reduce ? "auto" : "smooth" });
+  };
+
+  return (
+    <div className="ws-gallery" role="region" aria-roledescription="carousel" aria-label="Project screens">
+      <ul ref={ulRef} tabIndex={0} aria-label="Swipe or use the buttons to browse">
+        {items.map((im, i) => {
+          const p = projects.find((x) => im.src.startsWith(`/work/${x.slug}/`))!;
+          return (
+            <li key={im.src} data-i={i} aria-label={`${i + 1} of ${items.length}`}>
+              <div className="wg-media">
+                <img src={im.thumb} alt={im.alt} width={640} height={400} loading="lazy" decoding="async" />
+                <ZoomButton im={im} className="wg-zoom" />
+              </div>
+              <a href={`/work/${p.slug}/`} className="wg-link mono-sm">{p.name} — {p.category} <span aria-hidden="true">↗</span></a>
+            </li>
+          );
+        })}
+      </ul>
+      <div className="wrap wg-controls">
+        <p className="mono-sm wg-pos" aria-live="polite">{String(index + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}</p>
+        <div className="wg-btns">
+          <button type="button" className="wg-btn" onClick={() => go(-1)} disabled={index === 0} aria-label="Previous screen">←</button>
+          <button type="button" className="wg-btn" onClick={() => go(1)} disabled={index === items.length - 1} aria-label="Next screen">→</button>
+        </div>
+      </div>
+    </div>
   );
 }
