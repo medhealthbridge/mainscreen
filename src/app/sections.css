@@ -444,7 +444,7 @@
    ========================================================================== */
 
 .tf { margin-top: clamp(72px, 9vw, 140px); }
-.tf-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px 32px; padding-bottom: 16px; border-bottom: 1px solid var(--rule-dark); margin-bottom: 20px; }
+.tf-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px 32px; padding-bottom: 16px; border-bottom: 1px solid var(--rule-dark); margin-bottom: 20px; }
 .tf-kicker { color: var(--on-dark-2); }
 .tf-steps { display: flex; flex-wrap: wrap; gap: 4px; }
 .tf-step {

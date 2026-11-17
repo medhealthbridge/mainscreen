@@ -30,7 +30,7 @@ export const site = {
   formEndpoint: "",
 
   /** Production URL, used for social-sharing metadata. No trailing slash. */
-  url: "https://databridge.example",
+  url: "https://databridge-taupe.vercel.app",
 
   /** Page title and description for search engines and link previews. */
   title: "databridge — Websites and custom business systems",
