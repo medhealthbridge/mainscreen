@@ -58,7 +58,7 @@ export function ProjectField() {
     const stage = stageRef.current;
     const trail = trailRef.current;
     if (!stage || !trail) return;
-    const mq = window.matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)");
+    const mq = window.matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) and (min-width: 761px)");
     if (!mq.matches) return;
 
     // Interleave screens from every project so the trail alternates between them.
@@ -263,6 +263,31 @@ export function ProjectField() {
           </p>
         </div>
 
+        {/* Touch & small-screen alternative: a user-controlled swipe gallery */}
+        <div className="field-gallery" role="region" aria-label="Project gallery" tabIndex={0}>
+          <ul>
+            {projects.map((p) => {
+              const wide = p.images.find((i) => i.kind !== "mobile") ?? p.images[0];
+              const tall = p.images.find((i) => i.kind === "mobile");
+              return (
+                <li key={p.slug}>
+                  <a href={`/work/${p.slug}/`} className="fg-card">
+                    <span className="fg-media">
+                      <img src={wide.thumb} alt={wide.alt} width={640} height={400} loading="lazy" decoding="async" />
+                      {tall && <img className="fg-tall" src={tall.thumb} alt="" width={640} height={Math.round((640 * tall.height) / tall.width)} loading="lazy" decoding="async" />}
+                    </span>
+                    <span className="fg-text">
+                      <span className="fi-name">{p.name}</span>
+                      <span className="mono-sm muted">{p.category}</span>
+                      <span className="status" data-status={p.status}>{p.status}</span>
+                    </span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+          <p className="mono-sm muted fg-hint" aria-hidden="true">Swipe to browse →</p>
+        </div>
         <div className="field">
           <div className="field-stage" ref={stageRef} aria-hidden="true">
             <div className="field-rest">
@@ -320,31 +345,6 @@ export function ProjectField() {
           </div>
         </div>
 
-        {/* Touch & reduced-motion alternative: a user-controlled swipe gallery */}
-        <div className="field-gallery" role="region" aria-label="Project gallery" tabIndex={0}>
-          <ul>
-            {projects.map((p) => {
-              const wide = p.images.find((i) => i.kind !== "mobile") ?? p.images[0];
-              const tall = p.images.find((i) => i.kind === "mobile");
-              return (
-                <li key={p.slug}>
-                  <a href={`/work/${p.slug}/`} className="fg-card">
-                    <span className="fg-media">
-                      <img src={wide.thumb} alt={wide.alt} width={640} height={400} loading="lazy" decoding="async" />
-                      {tall && <img className="fg-tall" src={tall.thumb} alt="" width={640} height={Math.round((640 * tall.height) / tall.width)} loading="lazy" decoding="async" />}
-                    </span>
-                    <span className="fg-text">
-                      <span className="fi-name">{p.name}</span>
-                      <span className="mono-sm muted">{p.category}</span>
-                      <span className="status" data-status={p.status}>{p.status}</span>
-                    </span>
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-          <p className="mono-sm muted fg-hint" aria-hidden="true">Swipe to browse →</p>
-        </div>
       </div>
     </section>
   );

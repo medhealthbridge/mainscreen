@@ -44,7 +44,9 @@ export function Hero() {
 
         <h1 id="hero-title" className="display hero-title">
           {hero.headline.map((l, i) => (
-            <Line key={l} text={l} i={i} last={i === hero.headline.length - 1} />
+            <span key={l}>
+              <Line text={l} i={i} last={i === hero.headline.length - 1} />{" "}
+            </span>
           ))}
         </h1>
 

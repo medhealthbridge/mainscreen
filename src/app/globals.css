@@ -369,7 +369,7 @@ ul, ol { padding: 0; list-style: none; }
 @media (max-width: 760px) {
   .footer-top .col-a { grid-column: 1 / -1; }
   .footer-top .col-b { grid-column: 1 / span 6; }
-  .footer-top .col-c { grid-column: 7 / span 6; }
+  .footer-top .col-c { grid-column: 1 / -1; }
 }
 
 /* Reduced motion: stop everything non-essential */

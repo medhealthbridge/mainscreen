@@ -331,11 +331,10 @@
 @media (max-width: 760px) { .field-intro { grid-column: 1 / -1; } }
 
 /* Touch: replace the trail with a swipe gallery */
-@media (hover: none), (pointer: coarse) {
+@media (hover: none), (pointer: coarse), (max-width: 760px) {
   .field-stage { display: none; }
-  .field-side { grid-column: 1 / -1; margin-top: 8px; order: 2; }
+  .field-side { grid-column: 1 / -1; margin-top: 8px; }
   .field-gallery { display: block; margin: 0 calc(-1 * var(--gutter)) 36px; }
-  .field { display: flex; flex-direction: column-reverse; }
 }
 .field-gallery ul {
   display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory;
