@@ -9,12 +9,9 @@ export function Needs() {
   const chosen = needOptions.find((o) => o.id === need);
 
   return (
-    <section id="build" className="sec sec-light panel-in needs" aria-labelledby="needs-title">
+    <section id="problems" className="sec sec-light needs" aria-labelledby="needs-title">
       <div className="wrap">
-        <div className="sec-head">
-          <span className="mono idx"><b>02</b> What I build</span>
-          <span className="mono">Problems → solutions</span>
-        </div>
+        <p className="mono stage-label"><span className="node" aria-hidden="true" data-line="" data-turn="top" />03 — Design</p>
 
         <div className="needs-top">
           <h2 id="needs-title" className="display-2 mask-lines">

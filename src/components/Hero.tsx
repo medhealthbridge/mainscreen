@@ -1,7 +1,6 @@
 import { site } from "@/content/site";
-import { ArrivalMachine } from "./ArrivalMachine";
 
-/** Renders a headline line word by word; a trailing "." on the last line becomes the accent block. */
+/** Renders a headline line; a trailing "." on the last line becomes the accent block (the start of the data line). */
 function Line({ text, last, i }: { text: string; last: boolean; i: number }) {
   const words = text.split(" ");
   return (
@@ -14,12 +13,10 @@ function Line({ text, last, i }: { text: string; last: boolean; i: number }) {
               {isEnd ? (
                 <>
                   {w.slice(0, -1)}
-                  <span className="stop" aria-hidden="true" />
+                  <span className="stop" data-line-start aria-hidden="true" />
                   <span className="visually-hidden">.</span>
                 </>
-              ) : (
-                w
-              )}
+              ) : w}
               {wi < words.length - 1 ? " " : ""}
             </span>
           );
@@ -33,15 +30,7 @@ export function Hero() {
   const { hero } = site;
   return (
     <section className="hero sec-dark" aria-labelledby="hero-title">
-      <div className="hero-bg" aria-hidden="true">
-        {Array.from({ length: 13 }).map((_, i) => <i key={i} />)}
-      </div>
       <div className="wrap hero-inner">
-        <div className="hero-meta">
-          <p className="mono"><span className="tick" aria-hidden="true" />{hero.label}</p>
-          <p className="mono muted hero-meta-r">Independent designer &amp; developer</p>
-        </div>
-
         <h1 id="hero-title" className="display hero-title">
           {hero.headline.map((l, i) => (
             <span key={l}>
@@ -50,23 +39,19 @@ export function Hero() {
           ))}
         </h1>
 
-        <div className="hero-grid">
+        <div className="hero-foot">
           <div className="hero-copy">
-            <p className="lead pretty">{hero.intro}</p>
-            <div className="hero-ctas">
-              <a href="#contact" className="btn btn-primary">
-                {hero.primaryCta} <span className="arr" aria-hidden="true">→</span>
-              </a>
-              <a href="#work" className="btn btn-ghost">
-                {hero.secondaryCta} <span className="arr" aria-hidden="true">↓</span>
-              </a>
-            </div>
-            <ul className="hero-offer mono-sm" aria-label="What I build">
-              <li><span>A</span> Websites that explain and convert</li>
-              <li><span>B</span> Systems that organise the work</li>
-            </ul>
+            <p className="mono hero-label"><span className="tick" aria-hidden="true" />{hero.label}</p>
+            <p className="hero-intro pretty">{hero.intro}</p>
           </div>
-          <ArrivalMachine />
+          <div className="hero-ctas">
+            <a href="#contact" className="btn btn-primary">
+              {hero.primaryCta} <span className="arr" aria-hidden="true">→</span>
+            </a>
+            <a href="#work" className="hero-link mono">
+              <span>{hero.secondaryCta}</span> <span aria-hidden="true">↓</span>
+            </a>
+          </div>
         </div>
       </div>
     </section>

@@ -4,7 +4,7 @@
 .cs-crumbs a { color: var(--ivory); padding-block: 8px; }
 .cs-meta { color: var(--on-dark-2); margin-bottom: 14px; }
 .cs-meta span { color: var(--volt); }
-.cs-title { font-size: clamp(3.4rem, 15vw, 16rem); font-stretch: 64%; margin-left: -.04em; overflow-wrap: anywhere; }
+.cs-title { font-size: min(13vw, calc(96vw / (var(--len, 10) * .7))); margin-left: -.05em; white-space: nowrap; }
 .cs-summary { margin-top: 22px; max-width: 34ch; }
 .cs-banner { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin-top: 32px; padding: 14px 16px; border: 1px dashed rgba(215, 255, 63, .5); max-width: 760px; }
 .cs-facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap); margin-top: clamp(40px, 5vw, 72px); }
@@ -15,7 +15,7 @@
 .cs-cover-phone { position: absolute; right: var(--gutter); bottom: -6%; width: 17%; transform: rotate(3deg); }
 .cs-row { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gap); padding: clamp(32px, 4vw, 56px) 0; border-top: 1px solid var(--rule-light); }
 .cs-row:first-child { border-top: 1px solid var(--ink); }
-.cs-label { grid-column: 1 / span 4; font-weight: 800; font-stretch: 74%; text-transform: uppercase; font-size: clamp(1.6rem, 2.6vw, 2.6rem); line-height: .95; display: flex; flex-direction: column; gap: 10px; align-self: start; position: sticky; top: calc(var(--header-h) + 24px); }
+.cs-label { grid-column: 1 / span 4; font-weight: 900; letter-spacing: -.045em; text-transform: uppercase; font-size: clamp(1.6rem, 2.6vw, 2.6rem); line-height: .95; display: flex; flex-direction: column; gap: 10px; align-self: start; position: sticky; top: calc(var(--header-h) + 24px); }
 .cs-label .mono-sm { color: var(--on-light-2); font-weight: 400; }
 .cs-content { grid-column: 6 / -1; display: flex; flex-direction: column; gap: 20px; }
 .cs-lead { font-size: clamp(1.15rem, 1.4vw, 1.4rem); line-height: 1.45; max-width: 44ch; }
@@ -26,7 +26,7 @@
 .cs-honest { text-transform: none; letter-spacing: .01em; }
 .cs-decisions { display: grid; gap: 28px; }
 .cs-decisions li { display: grid; gap: 8px; border-top: 1px solid var(--ink); padding-top: 14px; }
-.cs-decisions h3 { font-weight: 750; font-stretch: 85%; font-size: 1.35em; line-height: 1.15; }
+.cs-decisions h3 { font-weight: 850; letter-spacing: -.03em; font-size: 1.35em; line-height: 1.15; }
 .cs-gallery { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: clamp(40px, 6vw, 96px) var(--gap); margin-top: clamp(56px, 7vw, 112px); align-items: center; }
 .cs-g-l { grid-column: 1 / span 9; }
 .cs-g-r { grid-column: 4 / -1; }
@@ -34,7 +34,7 @@
 .cs-cap { margin-top: 12px; text-transform: none; letter-spacing: .01em; }
 .cs-next { padding: clamp(56px, 7vw, 112px) 0 0; }
 .cs-next-link { display: flex; flex-direction: column; gap: 10px; padding-bottom: clamp(40px, 5vw, 80px); }
-.cs-next-name { font-size: clamp(3rem, 10vw, 11rem); font-stretch: 64%; transition: color .3s; }
+.cs-next-name { font-size: min(9vw, calc(90vw / (var(--len, 10) * .7))); white-space: nowrap; transition: color .3s; }
 .cs-next-link:hover .cs-next-name, .cs-next-link:focus-visible .cs-next-name { color: var(--volt); }
 @media (max-width: 900px) {
   .cs-facts { grid-template-columns: 1fr 1fr; }

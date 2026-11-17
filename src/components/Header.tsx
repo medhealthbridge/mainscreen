@@ -1,17 +1,31 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { site } from "@/content/site";
 import { Wordmark } from "./Wordmark";
 
+/** Transparent header that switches to dark text over light sections. */
 export function Header() {
-  const [scrolled, setScrolled] = useState(false);
+  const [onLight, setOnLight] = useState(false);
   const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
+    let raf = 0;
+    const check = () => {
+      raf = 0;
+      const els = document.elementsFromPoint(window.innerWidth / 2, 32);
+      const under = els.find((el) => !ref.current?.contains(el) && !el.closest(".mobile-menu"));
+      setOnLight(!!under?.closest(".sec-light, [data-theme='light']"));
+    };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(check); };
+    check();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
 
   useEffect(() => {
@@ -24,30 +38,20 @@ export function Header() {
 
   return (
     <>
-      <header className={`site-header ${scrolled || open ? "is-scrolled" : ""}`}>
+      <header ref={ref} className={`site-header ${onLight && !open ? "on-light" : ""}`}>
         <div className="wrap">
           <Wordmark />
           <nav aria-label="Main">
             <ul className="nav-list">
-              {site.nav.map((item, i) => (
-                <li key={item.href}>
-                  <a href={item.href}>
-                    <span className="n" aria-hidden="true">0{i + 1}</span>
-                    {item.label}
-                  </a>
-                </li>
+              {site.nav.map((item) => (
+                <li key={item.href}><a href={item.href}>{item.label}</a></li>
               ))}
             </ul>
           </nav>
-          <a href="/#contact" className="btn btn-primary header-cta">
-            {site.hero.primaryCta} <span className="arr" aria-hidden="true">→</span>
+          <a href="/#contact" className="header-cta">
+            <span>{site.hero.primaryCta}</span><span className="sq" aria-hidden="true" />
           </a>
-          <button
-            className="menu-btn"
-            aria-expanded={open}
-            aria-controls="mobile-menu"
-            onClick={() => setOpen((o) => !o)}
-          >
+          <button className="menu-btn" aria-expanded={open} aria-controls="mobile-menu" onClick={() => setOpen((o) => !o)}>
             {open ? "Close" : "Menu"} <span className="bars" aria-hidden="true" />
           </button>
         </div>
@@ -68,9 +72,7 @@ export function Header() {
           <a href="/#contact" className="btn btn-primary" onClick={() => setOpen(false)}>
             {site.hero.primaryCta} <span className="arr" aria-hidden="true">→</span>
           </a>
-          <a href={`mailto:${site.email}`} className="mono muted" style={{ textTransform: "none" }}>
-            {site.email}
-          </a>
+          <a href={`mailto:${site.email}`} className="mono muted" style={{ textTransform: "none" }}>{site.email}</a>
         </div>
       </div>
     </>

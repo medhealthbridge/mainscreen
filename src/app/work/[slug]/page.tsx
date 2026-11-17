@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { projects, getProject, statusNote } from "@/content/projects";
 import { site } from "@/content/site";
-import { Frame, Phone } from "@/components/FeaturedWork";
+import { Frame, Phone } from "@/components/Media";
 import "../casestudy.css";
 
 export const dynamicParams = false;
@@ -86,7 +86,7 @@ export default async function CaseStudy({ params }: { params: Promise<{ slug: st
             <span aria-current="page">{p.name}</span>
           </nav>
           <p className="mono cs-meta"><span>{String(idx + 1).padStart(2, "0")}</span> / {p.offering} / {p.category} / {p.year}</p>
-          <h1 className="display cs-title mask-lines"><span className="ml"><span>{p.name}</span></span></h1>
+          <h1 className="display cs-title mask-lines" style={{ "--len": p.name.length } as React.CSSProperties}><span className="ml"><span>{p.name}</span></span></h1>
           <p className="lead cs-summary pretty">{p.summary}</p>
 
           {p.status !== "Live" && (
@@ -145,7 +145,7 @@ export default async function CaseStudy({ params }: { params: Promise<{ slug: st
         <div className="wrap">
           <a href={`/work/${next.slug}/`} className="cs-next-link">
             <span className="mono-sm muted">Next project</span>
-            <span className="display cs-next-name">{next.name} <span aria-hidden="true">→</span></span>
+            <span className="display cs-next-name" style={{ "--len": next.name.length + 2 } as React.CSSProperties}>{next.name} <span aria-hidden="true">→</span></span>
             <span className="mono-sm muted">{next.category} · {next.status}</span>
           </a>
           <div className="cta-band">

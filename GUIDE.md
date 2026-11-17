@@ -148,13 +148,21 @@ screenshot of the top of the page and save it as `public/og.png`.
 
 ## 6. How the signature interactions behave
 
-- **Arrival (hero):** fragments assemble into a preview over ~4 s. The headline, copy and
-  buttons are visible immediately. Visitors can replay it. Reduced-motion users see the
-  finished state.
-- **Project field:** on desktop with a mouse, moving through the light stage lays project
-  screens along the pointer's path. Cards are decorative and never block clicks; the
-  project index beside it holds the real links, and hovering or keyboard-focusing an
-  index link shows a steady preview. On touch screens and small screens it's a swipe
-  gallery. With reduced motion there's no trail, just the still composition.
-- **Transformation:** autoplays once when scrolled into view, can be paused, and every
+- **The data line (scroll):** one volt line starts at the accent block after "SMARTER" and
+  draws itself down the page as you scroll (black over light sections). It routes through
+  every element marked `data-line` — section labels, the small square "route" nodes inside
+  each line-art scene, and invisible lanes at the top of light bands. Add `data-line` to any
+  element to make the line pass through it; `data-turn="top"` makes it turn in the empty space
+  at the top of that element's section. Code: `src/components/DataLine.tsx`.
+- **Work stage (pointer images):** the full-screen dark section after the hero. Moving the
+  mouse lays project screenshots along the pointer's path (bigger when you slow down); when
+  you stop, the newest four glide into a resting stack. Screens come from `projects.ts`
+  automatically. The index along the bottom holds the real links; hovering or keyboard-
+  focusing one shows a steady preview. Touch and small screens get a swipe gallery; reduced
+  motion shows the still stack. Code: `src/components/WorkStage.tsx`.
+- **Line-art project scenes:** each featured project has a hand-drawn SVG scene in
+  `src/components/Scenes.tsx`, keyed by project slug in `projectScenes`. A project without a
+  scene automatically shows its screenshots instead, so new projects work straight away.
+  The small paper cards on each scene are plain HTML inside the same file — edit their text there.
+- **Transformation:** autoplays once inside the first project's band, can be paused, and every
   step is a button with a written caption.

@@ -1,22 +1,26 @@
 import { Hero } from "@/components/Hero";
-import { ProjectField } from "@/components/ProjectField";
-import { NeedProvider } from "@/components/NeedContext";
-import { FeaturedWork } from "@/components/FeaturedWork";
+import { WorkStage } from "@/components/WorkStage";
+import { Intro } from "@/components/Intro";
+import { Capabilities } from "@/components/Capabilities";
 import { Needs } from "@/components/Needs";
-import { Services } from "@/components/Services";
+import { Projects } from "@/components/Projects";
 import { Process } from "@/components/Process";
 import { About } from "@/components/About";
 import { Faq } from "@/components/Faq";
 import { Contact } from "@/components/Contact";
+import { NeedProvider } from "@/components/NeedContext";
+import { DataLine } from "@/components/DataLine";
 
 export default function Home() {
   return (
     <NeedProvider>
+      <DataLine />
       <Hero />
-      <ProjectField />
-      <FeaturedWork />
+      <WorkStage />
+      <Intro />
+      <Capabilities />
       <Needs />
-      <Services />
+      <Projects />
       <Process />
       <About />
       <Faq />
