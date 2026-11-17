@@ -4,7 +4,7 @@ import { services } from "@/content/services";
 export function Capabilities() {
   return (
     <section id="build" className="caps sec-dark" aria-labelledby="caps-title">
-      <span className="lane" data-line="" data-turn="0" aria-hidden="true" />
+      <span className="lane" data-line="" data-turn="110" aria-hidden="true" />
       <div className="wrap">
         <p className="mono stage-label"><span className="node" aria-hidden="true" />02 — Structure</p>
         <h2 id="caps-title" className="display-2 caps-h mask-lines">

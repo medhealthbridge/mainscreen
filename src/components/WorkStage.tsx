@@ -62,8 +62,8 @@ export function WorkStage() {
     let next = 0, imgIdx = 0, z = 10, acc = 0, idle = 0;
     let last: { x: number; y: number; t: number } | null = null;
 
-    const T_MOVE = "transform 950ms var(--ease-out), opacity 420ms var(--ease-out), filter 600ms var(--ease-out)";
-    const T_SETTLE = "transform 1150ms var(--ease-out), opacity 700ms var(--ease-out), filter 500ms";
+    const T_MOVE = "transform 950ms var(--ease-out), opacity 420ms var(--ease-out)";
+    const T_SETTLE = "transform 1150ms var(--ease-out), opacity 700ms var(--ease-out)";
     const put = (c: Card, depth = 0, extraScale = 1) => {
       c.el.style.transform = `translate3d(${c.x - c.w / 2}px, ${c.y - c.h / 2}px, ${depth}px) rotate(${c.r}deg) scale(${c.s * extraScale})`;
     };
@@ -79,6 +79,7 @@ export function WorkStage() {
       const { w, h } = stackSize();
       const chosen = keep.length === 4 ? keep : cards.slice(0, 4);
       chosen.forEach((c, i) => {
+        c.el.getAnimations().forEach((a) => a.cancel());
         if (keep.length !== 4) {
           const im = stackPool[i % stackPool.length];
           c.img.src = im.thumb;
@@ -91,12 +92,10 @@ export function WorkStage() {
         c.el.style.width = `${w}px`; c.el.style.height = `${h}px`;
         c.el.style.transition = initial ? "none" : T_SETTLE;
         c.el.style.zIndex = String(++z);
-        c.el.style.filter = "none";
         c.el.style.opacity = "1";
         put(c);
       });
       active = chosen.slice();
-      stage.classList.remove("is-moving");
     };
 
     const emit = (x: number, y: number, dx: number, dy: number, speed: number) => {
@@ -116,26 +115,27 @@ export function WorkStage() {
       c.img.src = im.thumb;
       c.el.dataset.kind = im.kind;
       c.el.style.width = `${c.w}px`; c.el.style.height = `${c.h}px`;
+      // Entrance via the Web Animations API — no forced layout, stays on the compositor.
+      const from = `translate3d(${c.x - c.w / 2 - dx * 0.8}px, ${c.y - c.h / 2 - dy * 0.8}px, 80px) rotate(${c.r * 0.3}deg) scale(${c.s * 0.7})`;
+      c.el.getAnimations().forEach((a) => a.cancel());
       c.el.style.transition = "none";
       c.el.style.zIndex = String(++z);
-      c.el.style.filter = "none";
-      c.el.style.opacity = "0";
-      c.el.style.transform = `translate3d(${c.x - c.w / 2 - dx * 0.8}px, ${c.y - c.h / 2 - dy * 0.8}px, 80px) rotate(${c.r * 0.3}deg) scale(${c.s * 0.7})`;
-      void c.el.offsetWidth;
-      c.el.style.transition = T_MOVE;
       c.el.style.opacity = "1";
       put(c);
+      c.el.animate(
+        [{ transform: from, opacity: 0 }, { transform: c.el.style.transform, opacity: 1 }],
+        { duration: 950, easing: "cubic-bezier(0.16, 1, 0.3, 1)" },
+      );
       active.push(c);
       if (active.length > MAX_VISIBLE) { const o = active.shift()!; o.el.style.opacity = "0"; }
       const n = active.length;
       active.forEach((a, i) => {
         const age = n - 1 - i;
         if (age === 0) return;
-        a.el.style.opacity = String(Math.max(0.15, 1 - age * 0.065));
-        a.el.style.filter = age > 5 ? `blur(${Math.min(2.4, (age - 5) * 0.5).toFixed(2)}px) brightness(.8)` : age > 2 ? "brightness(.9)" : "none";
+        a.el.style.transition = T_MOVE;
+        a.el.style.opacity = String(Math.max(0.12, 1 - age * 0.075));
         put(a, -age * 26, 1 - age * 0.012);
       });
-      stage.classList.add("is-moving");
       window.clearTimeout(idle);
       idle = window.setTimeout(() => settle(), 900);
     };

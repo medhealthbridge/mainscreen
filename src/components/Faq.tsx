@@ -2,7 +2,7 @@ import { faq } from "@/content/services";
 
 export function Faq() {
   return (
-    <section className="sec sec-light panel-in faq" aria-labelledby="faq-title">
+    <section className="sec sec-light faq" aria-labelledby="faq-title">
       <div className="wrap faq-grid">
         <div className="faq-side">
           <p className="mono-sm faq-k">FAQ</p>

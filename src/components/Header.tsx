@@ -30,6 +30,8 @@ export function Header() {
 
   useEffect(() => {
     document.documentElement.style.overflow = open ? "hidden" : "";
+    const lenis = (window as unknown as { __lenis?: { stop: () => void; start: () => void } }).__lenis;
+    if (open) lenis?.stop(); else lenis?.start();
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     window.addEventListener("keydown", onKey);

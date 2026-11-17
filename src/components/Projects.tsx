@@ -38,7 +38,7 @@ function ProjectFeature({ p, n }: { p: Project; n: number }) {
       </article>
 
       <section className="pj-band sec-light" aria-labelledby={`pj-${p.slug}`}>
-        <span className="lane" data-line="" data-turn="0" aria-hidden="true" />
+        <span className="lane" data-line="" data-turn="110" aria-hidden="true" />
         <div className="wrap pj-band-grid">
           <div className="pj-info" data-reveal>
             <h3 id={`pj-${p.slug}`} className="display-3">{p.name}</h3>

@@ -8,6 +8,7 @@ import { site } from "@/content/site";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { RevealObserver } from "@/components/RevealObserver";
+import { SmoothScroll } from "@/components/SmoothScroll";
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main id="main">{children}</main>
         <Footer />
         <RevealObserver />
+        <SmoothScroll />
       </body>
     </html>
   );
