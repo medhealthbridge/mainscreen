@@ -5,14 +5,16 @@ import { useNeed } from "./NeedContext";
 import { ZoomButton } from "./Lightbox";
 
 /**
- * WORK STAGE — full-screen pointer trail of project screens.
- * Moving emits screens along the path (by distance travelled), larger when you slow down;
- * older screens recede. When you stop, the newest four glide back into a resting stack.
+ * WORK STAGE — a cursor image trail of project screens.
+ * Moving emits small screens along the path (by distance travelled). The newest stays sharp;
+ * older ones fade and soften out of focus, leaving a long trail behind the pointer. A small
+ * label travels with the cursor. When you stop, the trail fades (oldest first) and the
+ * newest four glide into a resting stack.
  * Imperative DOM only (no React renders on pointer move). Decorative: real links live in the index.
  */
 
-const POOL = 10;
-const MAX_VISIBLE = 7;
+const POOL = 26;
+const MAX_VISIBLE = 22;
 const SLOTS = [
   { dx: -0.07, dy: 0.05, r: -5 },
   { dx: 0.06, dy: -0.03, r: 4 },
@@ -63,7 +65,7 @@ export function WorkStage() {
     let next = 0, imgIdx = 0, z = 10, acc = 0, idle = 0;
     let last: { x: number; y: number; t: number } | null = null;
 
-    const T_MOVE = "transform 700ms var(--ease-out), opacity 380ms var(--ease-out)";
+    const T_MOVE = "transform 700ms var(--ease-out), opacity 420ms var(--ease-out), filter 420ms var(--ease-out)";
     const T_SETTLE = "transform 1000ms var(--ease-out), opacity 600ms var(--ease-out)";
     const put = (c: Card, depth = 0, extraScale = 1) => {
       c.el.style.transform = `translate3d(${c.x - c.w / 2}px, ${c.y - c.h / 2}px, ${depth}px) rotate(${c.r}deg) scale(${c.s * extraScale})`;
@@ -76,7 +78,12 @@ export function WorkStage() {
     // Resting stack (replaces the static HTML fallback).
     const settle = (initial = false) => {
       const keep = active.slice(-4);
-      active.slice(0, -4).forEach((c) => { c.el.style.transition = T_SETTLE; c.el.style.opacity = "0"; });
+      // Fade the trail gracefully, oldest first.
+      active.slice(0, -4).forEach((c, i) => {
+        c.el.style.transition = T_SETTLE;
+        c.el.style.transitionDelay = initial ? "0ms" : `${i * 28}ms`;
+        c.el.style.opacity = "0";
+      });
       const { w, h } = stackSize();
       const chosen = keep.length === 4 ? keep : cards.slice(0, 4);
       chosen.forEach((c, i) => {
@@ -92,6 +99,8 @@ export function WorkStage() {
         c.y = rect.height / 2 + slot.dy * rect.height;
         c.el.style.width = `${w}px`; c.el.style.height = `${h}px`;
         c.el.style.transition = initial ? "none" : T_SETTLE;
+        c.el.style.transitionDelay = initial ? "0ms" : "220ms";
+        c.el.style.filter = "none";
         c.el.style.zIndex = String(++z);
         c.el.style.opacity = "1";
         put(c);
@@ -103,12 +112,12 @@ export function WorkStage() {
       const c = cards[next++ % POOL];
       const im = pool[imgIdx++ % pool.length];
       active = active.filter((a) => a !== c);
-      const base = Math.min(420, Math.max(220, rect.width * 0.24));
+      const base = Math.min(230, Math.max(132, rect.width * 0.13));
       const tall = im.kind === "mobile";
       c.w = tall ? base * 0.48 : base;
       c.h = tall ? c.w * (im.height / im.width) : base * 0.625;
       const slow = 1 - Math.min(1, speed / 1.8);
-      c.s = 0.92 + slow * 0.3;
+      c.s = 0.94 + slow * 0.22;
       const hw = (c.w * c.s) / 2, hh = (c.h * c.s) / 2;
       c.x = Math.min(rect.width - hw, Math.max(hw, x));
       c.y = Math.min(rect.height - hh, Math.max(hh, y));
@@ -120,6 +129,8 @@ export function WorkStage() {
       const from = `translate3d(${c.x - c.w / 2 - dx * 0.35}px, ${c.y - c.h / 2 - dy * 0.35}px, 40px) rotate(${c.r * 0.5}deg) scale(${c.s * 0.86})`;
       c.el.getAnimations().forEach((a) => a.cancel());
       c.el.style.transition = "none";
+      c.el.style.transitionDelay = "0ms";
+      c.el.style.filter = "none";
       c.el.style.zIndex = String(++z);
       c.el.style.opacity = "1";
       put(c);
@@ -134,24 +145,25 @@ export function WorkStage() {
         const age = n - 1 - i;
         if (age === 0) return;
         a.el.style.transition = T_MOVE;
-        a.el.style.opacity = String(Math.max(0.22, 1 - age * 0.12));
-        // Older cards recede: a little smaller, dimmer, and turned slightly further.
-        const sc = a.s * (1 - age * 0.035);
-        const rot = a.r + Math.sign(a.r || 1) * age * 0.7;
-        a.el.style.transform = `translate3d(${a.x - a.w / 2}px, ${a.y - a.h / 2}px, ${-age * 18}px) rotate(${rot}deg) scale(${sc})`;
+        // Older cards recede: fainter, slightly smaller, and progressively out of focus.
+        a.el.style.opacity = String(Math.max(0.12, 1 - age * 0.04));
+        a.el.style.filter = age > 2 ? `blur(${Math.min(9, (age - 2) * 0.6).toFixed(1)}px)` : "none";
+        const sc = a.s * (1 - age * 0.01);
+        a.el.style.transform = `translate3d(${a.x - a.w / 2}px, ${a.y - a.h / 2}px, ${-age * 8}px) rotate(${a.r}deg) scale(${sc})`;
       });
       window.clearTimeout(idle);
-      idle = window.setTimeout(() => settle(), 700);
+      idle = window.setTimeout(() => settle(), 1500);
     };
 
     const onMove = (e: PointerEvent) => {
       if (e.pointerType !== "mouse" && e.pointerType !== "pen") return;
+      movePill(e);
       if (stage.classList.contains("is-previewing")) return;
       const x = e.clientX - rect.left, y = e.clientY - rect.top, t = performance.now();
       if (!last) { last = { x, y, t }; return; }
       const dx = x - last.x, dy = y - last.y, d = Math.hypot(dx, dy);
       acc += d;
-      const threshold = Math.max(72, rect.width * 0.06);
+      const threshold = Math.max(34, rect.width * 0.03);
       if (acc >= threshold) {
         const speed = acc / Math.max(16, t - last.t);
         const k = threshold / Math.max(d, 1);
@@ -159,8 +171,32 @@ export function WorkStage() {
         acc = 0; last = { x, y, t };
       } else last = { x, y, t: last.t };
     };
-    const onEnter = () => { rect = field.getBoundingClientRect(); last = null; acc = 0; };
-    const onLeave = () => { window.clearTimeout(idle); settle(); last = null; };
+    // Cursor label: follows the pointer with a light lag (rAF only while it's moving).
+    const pill = stage.querySelector<HTMLElement>(".ws-cursor");
+    const sRect = () => stage.getBoundingClientRect();
+    let px = 0, py = 0, tx = 0, ty = 0, praf = 0;
+    const pillLoop = () => {
+      px += (tx - px) * 0.22; py += (ty - py) * 0.22;
+      if (pill) pill.style.transform = `translate3d(${px.toFixed(1)}px, ${py.toFixed(1)}px, 0)`;
+      praf = Math.abs(tx - px) + Math.abs(ty - py) > 0.3 ? requestAnimationFrame(pillLoop) : 0;
+    };
+    // Offset beside the pointer; flips to the left/above near the stage edges so it never clips.
+    const target = (e: PointerEvent, r: DOMRect) => {
+      const x = e.clientX - r.left, y = e.clientY - r.top;
+      const w = pill?.offsetWidth ?? 0, h = pill?.offsetHeight ?? 0;
+      tx = x + 18 + w > r.width - 12 ? x - 18 - w : x + 18;
+      ty = y + 18 + h > r.height - 12 ? y - 18 - h : y + 18;
+    };
+    const movePill = (e: PointerEvent) => {
+      target(e, sRect());
+      if (!praf) praf = requestAnimationFrame(pillLoop);
+    };
+    const onEnter = (e: PointerEvent) => {
+      rect = field.getBoundingClientRect(); last = null; acc = 0;
+      target(e, sRect()); px = tx; py = ty;
+      stage.classList.add("is-hovering");
+    };
+    const onLeave = () => { window.clearTimeout(idle); settle(); last = null; stage.classList.remove("is-hovering"); };
     const onResize = () => { rect = field.getBoundingClientRect(); settle(true); };
     const onScroll = () => { rect = field.getBoundingClientRect(); };
 
@@ -168,14 +204,15 @@ export function WorkStage() {
     stage.classList.add("is-live");
     (stage as HTMLDivElement & { __settle?: () => void }).__settle = () => settle();
 
-    stage.addEventListener("pointerenter", onEnter);
+    stage.addEventListener("pointerenter", onEnter as EventListener);
     stage.addEventListener("pointermove", onMove);
     stage.addEventListener("pointerleave", onLeave);
     window.addEventListener("resize", onResize);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       window.clearTimeout(idle);
-      stage.removeEventListener("pointerenter", onEnter);
+      stage.removeEventListener("pointerenter", onEnter as EventListener);
+      cancelAnimationFrame(praf);
       stage.removeEventListener("pointermove", onMove);
       stage.removeEventListener("pointerleave", onLeave);
       window.removeEventListener("resize", onResize);
@@ -221,13 +258,14 @@ export function WorkStage() {
   const anySample = projects.some((p) => p.sampleData);
 
   return (
-    <section id="work" className="work sec-dark" aria-labelledby="work-title">
+    <section id="work" className="work sec-light" aria-labelledby="work-title">
       <div className="work-stage" ref={stageRef}>
         <div className="wrap ws-top">
           <p className="ws-statement">Websites that explain.</p>
           <p className="ws-statement ws-r">Systems that run the work.</p>
         </div>
 
+        <div className="ws-cursor mono-sm" aria-hidden="true"><span className="wsc-dot" />[ move to explore the work ]</div>
         <div className="ws-field" ref={fieldRef} aria-hidden="true">
           <div className="ws-rest">
             {stack.map((im, i) => (

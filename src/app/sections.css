@@ -605,3 +605,38 @@ body { position: relative; }
   .hero-foot { grid-template-columns: minmax(0, 1fr) auto; }
   .hero-ctas .btn { flex: 0 0 auto; }
 }
+
+/* ==========================================================================
+   WORK STAGE on ivory — long, softly blurred cursor trail + cursor label
+   ========================================================================== */
+.work.sec-light .work-stage { cursor: default; }
+.work.sec-light .ws-statement { color: var(--ink); }
+.work.sec-light .ws-meta h2 { color: var(--ink); }
+.work.sec-light .ws-meta h2 .tick { background: var(--ink); }
+.work.sec-light .ws-meta h2 em { color: var(--on-light-3); }
+.work.sec-light .ws-hint, .work.sec-light .wi-n, .work.sec-light .wi-meta { color: var(--on-light-2); }
+.work.sec-light .ws-note { color: var(--on-light-3); }
+.work.sec-light .ws-index a { border-top-color: var(--rule-light); }
+.work.sec-light .ws-index a:hover, .work.sec-light .ws-index a:focus-visible { border-top-color: var(--ink); }
+.work.sec-light .ws-index a:hover .wi-name, .work.sec-light .ws-index a:focus-visible .wi-name { color: var(--ink); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; }
+.work.sec-light .ws-index li.is-match .wi-meta { color: var(--ink); font-weight: 500; }
+.work.sec-light .wcard img { background: #e7e2d7; box-shadow: 0 14px 30px -14px rgba(8, 8, 8, .35), 0 0 0 1px rgba(8, 8, 8, .06); border-radius: 3px; }
+.work.sec-light .wcard[data-kind="mobile"] img { border-radius: 8px; }
+.work.sec-light .ws-rest-card img, .work.sec-light .ws-preview img { box-shadow: 0 40px 80px -30px rgba(8, 8, 8, .4), 0 0 0 1px rgba(8, 8, 8, .08); }
+.work.sec-light .wg-link, .work.sec-light .wg-pos { color: var(--on-light-2); }
+.work.sec-light .wg-btn { border-color: var(--rule-light); color: var(--ink); }
+
+/* Cursor label */
+.ws-cursor {
+  position: absolute; left: 0; top: 0; z-index: 6; pointer-events: none;
+  display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+  padding: 7px 12px 7px 8px; border-radius: 999px;
+  background: var(--ink); color: var(--ivory); text-transform: none; letter-spacing: .02em;
+  opacity: 0; transition: opacity .3s var(--ease-out);
+  will-change: transform;
+}
+.wsc-dot { width: 8px; height: 8px; background: var(--volt); flex: none; }
+.work-stage.is-live.is-hovering .ws-cursor { opacity: 1; }
+.work-stage.is-previewing .ws-cursor { opacity: 0; }
+.work-stage.is-live.is-hovering .ws-hint { opacity: 0; }
+@media (hover: none), (pointer: coarse), (max-width: 760px), (prefers-reduced-motion: reduce) { .ws-cursor { display: none; } }
