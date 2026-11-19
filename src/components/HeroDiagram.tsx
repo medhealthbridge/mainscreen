@@ -99,7 +99,7 @@ export function HeroDiagram() {
     };
     // Wait for the brand intro (if any) so motions don't compete.
     const introOn = document.documentElement.classList.contains("intro");
-    const t = window.setTimeout(start, introOn ? 2400 : 450);
+    const t = window.setTimeout(start, introOn ? 3400 : 450);
     let r = 0;
     const onResize = () => { window.clearTimeout(r); r = window.setTimeout(layout, 120); };
     window.addEventListener("resize", onResize);

@@ -19,7 +19,7 @@ You don't need to touch layout code to update text, projects or contact details.
 ## 1. Your name and contact details — `src/content/site.ts`
 
 - `name` — used in titles and the footer.
-- `wordmark` — the single word shown beside the symbol, e.g. `"DATABRIDGE"` (no dash).
+- `wordmark` — the two words either side of the bridge-shaped dash, e.g. `["DATA", "BRIDGE"]`.
 - `email` — shown on the page and used by the email fallback.
 - `url` — your live domain (no trailing slash). Used for link previews.
 - `links` — your public profile links (LinkedIn, GitHub…). They appear in About and the footer. Leave empty to hide.
@@ -170,13 +170,17 @@ screenshot of the top of the page and save it as `public/og.png`.
   the footer, the favicon (`public/icon.svg`: ink on light tabs, lime on dark) and the
   home-screen icon all use this one geometry. If you edit it, keep that 1.5-unit rule and
   update `icon.svg` with the same path.
-- **Signature entrance** (`BrandIntro.tsx`): the header's own symbol starts as two cut pieces
-  slightly apart along the step's diagonal, glides into register (~1.25 s), holds until ~1.6 s, and on
-  wide screens glides from the free space beside the first headline line into the header,
-  where DATABRIDGE is unmasked (~2.2 s). Small or short screens run the same assembly inside
-  the logo itself at the same pace. It plays once per browser session, only on the home page, never
-  for `#deep-links`, and never with reduced motion. The page is readable and clickable the
-  whole time; any scroll, tap, key press or opening the menu settles the logo at once.
+- **The lockup**: the D/B symbol, then DATA, a dash drawn as a small arched bridge
+  (`BridgeDash.tsx`), then BRIDGE. Header, footer and loading screen share it.
+- **First-visit loading screen** (`BrandIntro.tsx`, geometry in `src/lib/bridgeScene.ts`,
+  styles under "Loading screen" in `globals.css`): two piers rise, three deck segments per
+  side glide in and leave a stepped opening, a lime key lowers into it and one signal
+  crosses; the view tilts down onto the joint — the key is exactly the symbol's stepped
+  band — the D grows around it, DATA—BRIDGE appears, and the screen lifts (~3.3 s). Desktop
+  settles the lockup into the header; phones dissolve into it. Once per browser session,
+  direct home visits only; never for `#deep-links` or reduced motion. "Skip intro", any
+  click on the screen, Escape and scroll gestures end it at once, and it clears itself
+  even if the site's JavaScript fails (hard stop at 5 s).
 - **Hero diagram** (`HeroDiagram.tsx`): three loose nodes join and feed the lime square.
   Shown only where there's room (wide screens).
 - **The data line** (`DataLine.tsx`): starts at the hero's lime square and draws down the

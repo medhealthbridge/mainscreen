@@ -14,10 +14,13 @@ import { BrandIntro } from "@/components/BrandIntro";
 
 /**
  * Runs before first paint: marks JS as available (reveal animations never hide content
- * without it) and decides whether the brand intro plays — first visit this session,
- * home page, no #deep-link, and motion allowed. Decided here so nothing flashes.
+ * without it) and decides whether the first-visit loading screen plays — first visit this
+ * session, home page, no #deep-link, motion allowed. Decided here so nothing flashes.
+ * It also wires the ways out *before* the app hydrates, so nobody is ever stranded:
+ * the "Skip intro" button (or any click on the screen), Escape, scroll gestures and keys,
+ * and a hard 5-second timeout. `window.__dbIntroDone()` ends it.
  */
-const INTRO_DECISION = `(function(){var d=document.documentElement;d.classList.add('js');try{var r=window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=sessionStorage.getItem('db-intro');if(!r&&!seen&&location.pathname==='/'&&!location.hash){d.classList.add('intro')}}catch(e){}})()`;
+const INTRO_DECISION = `(function(){var d=document.documentElement;d.classList.add('js');try{if(matchMedia('(prefers-reduced-motion: reduce)').matches||sessionStorage.getItem('db-intro')||location.pathname!=='/'||location.hash)return;d.classList.add('intro');sessionStorage.setItem('db-intro','1');var ev=['click','keydown','wheel','touchmove'],keys={Escape:1,' ':1,PageDown:1,ArrowDown:1,End:1},skip,done=function(){if(d.classList.contains('intro-done'))return;d.classList.add('intro-done');ev.forEach(function(t){removeEventListener(t,skip,true)});window.dispatchEvent(new Event('db:intro-done'))};skip=function(e){if(e.type==='keydown'&&!keys[e.key])return;if(e.type==='click'&&!(e.target.closest&&e.target.closest('.ld')))return;d.classList.add('intro-skip');done()};ev.forEach(function(t){addEventListener(t,skip,{passive:true,capture:true})});window.__dbIntroDone=done;setTimeout(done,5000)}catch(e){}})()`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -48,8 +51,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: INTRO_DECISION }} />
       </head>
       <body>
-        <a className="skip-link" href="#main">Skip to content</a>
         <BrandIntro />
+        <a className="skip-link" href="#main">Skip to content</a>
         <Header />
         <main id="main">{children}</main>
         <Footer />

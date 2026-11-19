@@ -3,8 +3,8 @@ import { MARK_BOTTOM, MARK_PATH, MARK_TOP } from "@/lib/mark";
 /**
  * The DataBridge symbol (see src/lib/mark.ts). Colour comes from `currentColor`.
  * `split` also renders the two cut pieces used by the entrance; they are hidden
- * unless an ancestor has `.is-assembling`, so at rest only the single, seamless
- * path is drawn.
+ * (they are hidden by CSS; the single, seamless
+ * path is what is drawn at rest).
  */
 export function Mark({ className = "", split = false }: { className?: string; split?: boolean }) {
   return (
