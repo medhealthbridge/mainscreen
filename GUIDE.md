@@ -171,10 +171,10 @@ screenshot of the top of the page and save it as `public/og.png`.
   home-screen icon all use this one geometry. If you edit it, keep that 1.5-unit rule and
   update `icon.svg` with the same path.
 - **Signature entrance** (`BrandIntro.tsx`): the header's own symbol starts as two cut pieces
-  slightly apart along the step's diagonal, slides into register (~560 ms), holds, and on
+  slightly apart along the step's diagonal, glides into register (~1.25 s), holds until ~1.6 s, and on
   wide screens glides from the free space beside the first headline line into the header,
-  where DATABRIDGE is unmasked (~1.05 s). Small or short screens run the same assembly inside
-  the logo itself (~850 ms). It plays once per browser session, only on the home page, never
+  where DATABRIDGE is unmasked (~2.2 s). Small or short screens run the same assembly inside
+  the logo itself at the same pace. It plays once per browser session, only on the home page, never
   for `#deep-links`, and never with reduced motion. The page is readable and clickable the
   whole time; any scroll, tap, key press or opening the menu settles the logo at once.
 - **Hero diagram** (`HeroDiagram.tsx`): three loose nodes join and feed the lime square.

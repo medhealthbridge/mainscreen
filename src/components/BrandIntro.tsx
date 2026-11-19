@@ -7,16 +7,16 @@ import { useEffect } from "react";
  * The header's own symbol performs it — there is no overlay and no duplicate logo,
  * so the last frame *is* the header lockup.
  *
- *  0–300 ms    the two cut pieces sit slightly apart along the step's diagonal
- *              (upper piece up-right, lower piece down-left) and drift a hair closer.
- *  300–560 ms  they slide together along that diagonal and decelerate into register;
- *              the stepped gap closes and the D/B reads. Brief stillness.
- *  650–1050 ms wide screens: the finished symbol (staged large in the free space beside
- *              the first headline line) rises into the gap under the header and glides
- *              into its slot; DATABRIDGE is unmasked as it lands.
+ *  0–400 ms      the two cut pieces start slightly offset along the step's diagonal
+ *                (upper piece up-right, lower piece down-left) and ease toward each other.
+ *  400–1250 ms   the stepped edges slide together, decelerating gradually into register.
+ *  1250–1600 ms  the completed symbol holds still.
+ *  1600–2200 ms  wide screens: the symbol (staged large in the free space beside the first
+ *                headline line) scales down and settles into its header slot; DATABRIDGE
+ *                is unmasked as it arrives.
  *
  * Small or short screens run the same assembly inside the logo's own footprint and
- * then unmask the word (≈850 ms in all).
+ * then unmask the word, at the same pace (≈2.2 s in all).
  *
  * Whether it plays is decided before first paint by the inline script in layout.tsx
  * (adds `html.intro`): first visit this session, path "/", no #hash, motion allowed.
@@ -66,18 +66,18 @@ export function BrandIntro() {
     };
     const later = (fn: () => void, ms: number) => timers.push(window.setTimeout(fn, ms));
 
-    /** The two pieces: start `o` units apart on the step's diagonal, register at `s1`. */
-    const assemble = (o: number, s0: number, s1: number) => {
+    /**
+     * The two pieces start `o` units apart on the step's diagonal and begin moving at
+     * once: a gentle ease toward each other, then a long, gradually decelerating glide
+     * that lets the stepped edges slide into exact register at `end` ms.
+     */
+    const GLIDE = "cubic-bezier(0.35, 0.15, 0.2, 1)";
+    const assemble = (o: number, end: number) => {
       const at = (d: number) => `translate(${d.toFixed(2)}px, ${(-d).toFixed(2)}px)`;
-      const kf = (sign: 1 | -1): Keyframe[] => [
-        { offset: 0, transform: at(sign * o * 1.12), easing: "linear" },
-        { offset: s0 / s1, transform: at(sign * o), easing: DECEL },
-        { offset: 1, transform: at(0) },
-      ];
-      run(pa, kf(1), { duration: s1 });
-      run(pb, kf(-1), { duration: s1 });
+      run(pa, [{ transform: at(o) }, { transform: at(0) }], { duration: end, easing: GLIDE });
+      run(pb, [{ transform: at(-o) }, { transform: at(0) }], { duration: end, easing: GLIDE });
       // At registration swap to the single seamless path (identical geometry).
-      later(() => link.classList.remove("is-assembling"), s1);
+      later(() => link.classList.remove("is-assembling"), end);
     };
     const reveal = (delay: number, duration: number) =>
       run(word, [
@@ -118,7 +118,7 @@ export function BrandIntro() {
 
       if (st) {
         // ---- Wide: stage in the hero, then fly into the header slot. ----
-        const T = 1050, HOLD_END = 650;
+        const T = 2200, HOLD_END = 1600;
         const k = st.S / M.width;
         const c1 = { x: M.left + M.width / 2, y: M.top + M.height / 2 };
         const ease = (u: number) => (u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2);
@@ -135,7 +135,7 @@ export function BrandIntro() {
         };
         const frames: Keyframe[] = [
           { offset: 0, transform: at(0), opacity: 0 },
-          { offset: 90 / T, transform: at(0), opacity: 1 },
+          { offset: 120 / T, transform: at(0), opacity: 1 },
           { offset: HOLD_END / T, transform: at(0), opacity: 1 },
         ];
         const N = 28;
@@ -144,15 +144,15 @@ export function BrandIntro() {
           frames.push({ offset: (HOLD_END + (T - HOLD_END) * tau) / T, transform: at(ease(tau)), opacity: 1 });
         }
         run(box, frames, { duration: T, easing: "linear" });
-        assemble(3, 300, 560);
-        reveal(950, 280);
-        later(finish, T + 320);
+        assemble(4.5, 1250);
+        reveal(1880, 420);
+        later(finish, 2340);
       } else {
         // ---- Compact: the same gesture inside the logo's own footprint. ----
-        run(box, [{ opacity: 0 }, { opacity: 1 }], { duration: 90 });
-        assemble(3, 160, 430);
-        reveal(540, 300);
-        later(finish, 880);
+        run(box, [{ opacity: 0 }, { opacity: 1 }], { duration: 120 });
+        assemble(6, 1250);
+        reveal(1600, 560);
+        later(finish, 2200);
       }
       html.classList.add("intro-run");
     };
@@ -166,7 +166,7 @@ export function BrandIntro() {
       if (performance.now() - fcp > 1400) finish();
       else play();
     });
-    later(finish, 3200); // safety net
+    later(finish, 4200); // safety net
 
     return () => { if (!done) stop(); document.removeEventListener("visibilitychange", finish); };
   }, []);

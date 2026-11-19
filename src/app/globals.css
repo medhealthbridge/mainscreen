@@ -413,6 +413,6 @@ ul, ol { padding: 0; list-style: none; }
    Until the script takes over, the header lockup is held back so the first painted
    frame is the start of the gesture. If the script never runs, it appears anyway. */
 .intro:not(.intro-run):not(.intro-done) .site-header .wm-mark,
-.intro:not(.intro-run):not(.intro-done) .site-header .wm-word { opacity: 0; animation: wmFallback .2s 2.6s both; }
+.intro:not(.intro-run):not(.intro-done) .site-header .wm-word { opacity: 0; animation: wmFallback .2s 3.2s both; }
 @keyframes wmFallback { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .intro .site-header .wm-mark, .intro .site-header .wm-word { opacity: 1 !important; animation: none !important; } }
