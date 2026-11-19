@@ -418,7 +418,8 @@ ul, ol { padding: 0; list-style: none; }
    match-cut → lockup 2.58–2.9 · lift 2.9–3.2. */
 .intro:not(.intro-done) .ld[hidden] { display: block; }
 .ld { position: fixed; inset: 0; z-index: 200; pointer-events: none; }
-.ld-panel { position: absolute; inset: 0; background: var(--ink); pointer-events: auto; }
+.ld-bg { position: absolute; inset: 0; background: var(--ink); pointer-events: auto; }
+.ld-panel { position: absolute; inset: 0; pointer-events: none; }
 .ld-stage {
   position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
   width: min(var(--ld-vw, 100vw), calc(var(--ld-vh, 100vh) * 1672 / 941)); aspect-ratio: 1672 / 941;
@@ -438,9 +439,9 @@ ul, ol { padding: 0; list-style: none; }
 @keyframes ldToLeft { from { -webkit-mask-position: 0% 0; mask-position: 0% 0; opacity: 1; } to { -webkit-mask-position: 100% 0; mask-position: 100% 0; opacity: 1; } }
 
 .ld-go .ld-plate { animation: ldFadeIn .3s linear both; }
-.ld-go .ld-pyl:nth-of-type(2) { animation: ldUp .37s cubic-bezier(.4, 0, .2, 1) .05s both; }
+.ld-go .ld-pylon-left { animation: ldUp .37s cubic-bezier(.4, 0, .2, 1) .05s both; }
 .ld-go .ld-fanL { animation: ldToRight .40s cubic-bezier(.4, 0, .2, 1) .30s both; }
-.ld-go .ld-pyl:nth-of-type(4) { animation: ldUp .36s cubic-bezier(.4, 0, .2, 1) .50s both; }
+.ld-go .ld-pylon-right { animation: ldUp .36s cubic-bezier(.4, 0, .2, 1) .50s both; }
 .ld-go .ld-fanR { animation: ldToLeft .44s cubic-bezier(.4, 0, .2, 1) .76s both; }
 
 /* the piece appears above the open joint, then lowers (550 ms) into a precise stop */
@@ -485,17 +486,41 @@ ul, ol { padding: 0; list-style: none; }
 .ld-go.ld-still .ld-id .wm-word { animation: ldWord .28s cubic-bezier(.16, 1, .3, 1) 2.56s both; }
 
 /* the screen lifts onto the home page; phones dissolve the lockup into the header logo */
-.ld-go .ld-panel { animation: ldLift .3s cubic-bezier(.65, 0, .35, 1) 2.9s both; }
+.ld-go .ld-panel, .ld-go .ld-bg { animation: ldLift .3s cubic-bezier(.65, 0, .35, 1) 2.9s both; }
 @keyframes ldLift { from { transform: none; } to { transform: translateY(-100%); } }
 .ld-go .ld-id { animation: ldFadeOut .28s linear 2.9s forwards; }
-.ld-go .ld { animation: ldGone .01s linear 3.24s forwards; }
-@keyframes ldGone { to { visibility: hidden; } }
 .ld-fly .ld-id { animation: none; }
 
 /* the header logo waits for the intro (desktop lands the lockup on it instead) */
 .intro:not(.intro-done) .site-header .wordmark { opacity: 0; }
 .intro.ld-go:not(.intro-done) .site-header .wordmark { animation: ldFadeIn .28s linear 3s both; }
-.ld-fly:not(.intro-done) .site-header .wordmark { animation: none; opacity: 0; }
+.intro.ld-go.ld-fly:not(.intro-done) .site-header .wordmark { animation: none; opacity: 0; }
+
+/* violet glow (from the bridge's own silhouette): breathes in once it stands, swells at contact */
+.ld-glow { mix-blend-mode: screen; }
+.ld-go .ld-glow { animation: ldGlowIn .5s ease-out 1.12s both, ldGlowPulse .75s ease-out 1.86s forwards; }
+@keyframes ldGlowIn { from { opacity: 0; } to { opacity: .42; } }
+@keyframes ldGlowPulse { 0% { opacity: .42; } 22% { opacity: .9; } 100% { opacity: .5; } }
+/* one glossy sheen sweeps across the structure with the highlight */
+.ld-sheen { position: absolute; inset: 0; opacity: 0; mix-blend-mode: screen;
+  background: linear-gradient(100deg, transparent 40%, rgba(205, 186, 255, .25) 46%, rgba(240, 233, 255, .8) 50%, rgba(205, 186, 255, .25) 54%, transparent 60%) 100% 0 / 300% 100% no-repeat; }
+.intro .ld-sheen { -webkit-mask: var(--mask) center / 100% 100% no-repeat; mask: var(--mask) center / 100% 100% no-repeat; }
+.ld-go .ld-sheen { animation: ldSheen .7s cubic-bezier(.45, 0, .4, 1) 1.95s both; }
+@keyframes ldSheen { 0% { background-position: 100% 0; opacity: 1; } 92% { opacity: 1; } 100% { background-position: 0% 0; opacity: 0; } }
+
+/* the background signature writes itself, then hands over to the page's line */
+.ld-sig { position: absolute; left: 50%; top: 46%; width: min(92vw, 1250px); transform: translate(-50%, -50%); overflow: visible; pointer-events: none; }
+.ld-sig path { fill: none; stroke: var(--ivory); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 1; stroke-dashoffset: 1; opacity: .17; }
+.ld-go .ld-sig path { animation: ldWrite 2.5s cubic-bezier(.4, .05, .35, 1) .05s both; }
+@keyframes ldWrite { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+.ld-go .ld-sig { animation: ldFadeOut .5s linear 3.2s forwards; }
+.ld-tail { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.ld-tail path { fill: none; stroke: var(--volt); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1 1; stroke-dashoffset: 1; filter: drop-shadow(0 0 4px rgba(215, 255, 63, .6)); }
+.ld-tailing .ld-tail path { animation: ldWrite .38s cubic-bezier(.5, 0, .3, 1) both, ldFadeOut .4s linear .55s forwards; }
+/* after the intro ends, only the signature and its line stay for their short outro */
+.ld-tailing .ld[hidden] { display: block; }
+.intro-done .ld-bg, .intro-done .ld-panel, .intro-done .ld-id, .intro-done .ld-skip { display: none; }
+.intro-skip .ld { display: none !important; }
 
 /* Skip control: visible from the first frame */
 .ld-skip {

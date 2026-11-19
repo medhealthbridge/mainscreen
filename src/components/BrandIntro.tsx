@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { Mark } from "./Mark";
 import { WordmarkText } from "./Wordmark";
-import { ART, ASSET_DIR, DECK_LINE, EDGE, JOINT, LAYERS, LOWER, PIECE, PLATE } from "@/lib/introAssets";
+import { ART, ASSET_DIR, DECK_LINE, EDGE, GLOW, JOINT, LAYERS, LOWER, MASK, PIECE, PLATE, SIGNATURE } from "@/lib/introAssets";
 
 /**
  * FIRST-VISIT INTRO (≈3.2 s, once per browser session, direct home visits only).
@@ -20,6 +20,12 @@ import { ART, ASSET_DIR, DECK_LINE, EDGE, JOINT, LAYERS, LOWER, PIECE, PLATE } f
  *              DATA—BRIDGE. Phones keep the camera still and match-cut in place.
  *  2.9–3.2 s   the black screen lifts onto the home page; desktop settles the lockup
  *              into the header, phones dissolve into it.
+ *  3.0–3.75 s  behind it all, a cursive "databridge" signature has been writing itself
+ *              since the start; as the screen lifts, its last stroke runs on as a lime line
+ *              into the hero's lime square — where the page's data line begins — then fades.
+ *
+ * A soft violet glow (from the bridge's own silhouette) breathes in once the structure
+ * stands and swells at contact; one glossy sheen sweeps across it with the highlight.
  *
  * The decision to play, the preload gate (the intro only starts once the artwork is
  * decoded; if it is slow, the site is shown instead), the match-cut numbers, Skip intro,
@@ -63,7 +69,28 @@ export function BrandIntro() {
       a.onfinish = done;
       a.oncancel = done;
     };
-    const onStart = (e: AnimationEvent) => { if (e.target === panel && e.animationName === "ldLift") fly(); };
+    // The signature's last stroke runs on into the hero's lime square (the data line's start).
+    const tail = () => {
+      if (html.classList.contains("intro-done")) return;
+      const sig = document.querySelector<SVGPathElement>(".ld-sig path");
+      const svg = document.querySelector<SVGSVGElement>(".ld-tail");
+      const stop = document.querySelector<HTMLElement>(".hero-title .stop");
+      const ctm = sig?.getScreenCTM();
+      if (!sig || !svg || !stop || !ctm) return;
+      const end = sig.getPointAtLength(sig.getTotalLength());
+      const a = new DOMPoint(end.x, end.y).matrixTransform(ctm);
+      const r = stop.getBoundingClientRect();
+      const b = { x: r.left + r.width * 0.15, y: r.top + r.height / 2 };
+      const vw = window.innerWidth, vh = window.innerHeight;
+      svg.setAttribute("viewBox", `0 0 ${vw} ${vh}`);
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const d = `M${a.x.toFixed(1)} ${a.y.toFixed(1)} C${(a.x + Math.max(60, Math.abs(dx) * 0.35)).toFixed(1)} ${(a.y + Math.abs(dy) * 0.2 + 40).toFixed(1)} ${(b.x + Math.max(90, Math.abs(dx) * 0.45)).toFixed(1)} ${(b.y + 6).toFixed(1)} ${b.x.toFixed(1)} ${b.y.toFixed(1)}`;
+      svg.querySelector("path")?.setAttribute("d", d);
+      html.classList.add("ld-tailing");
+      window.setTimeout(() => stop.classList.add("is-hit"), 380);
+      window.setTimeout(() => html.classList.remove("ld-tailing"), 1000);
+    };
+    const onStart = (e: AnimationEvent) => { if (e.target === panel && e.animationName === "ldLift") { tail(); fly(); } };
     const onEnd = (e: AnimationEvent) => { if (e.target === panel && e.animationName === "ldLift" && !flying) done(); };
     panel.addEventListener("animationstart", onStart);
     panel.addEventListener("animationend", onEnd);
@@ -75,11 +102,16 @@ export function BrandIntro() {
 
   return (
     <div className="ld" hidden>
+      <div className="ld-bg" aria-hidden="true" />
+      <svg className="ld-sig" viewBox={SIGNATURE.viewBox} aria-hidden="true" focusable="false">
+        <path d={SIGNATURE.d} pathLength={1} />
+      </svg>
       <div className="ld-panel" aria-hidden="true">
         <div className="ld-stage">
           <div className="ld-cam" style={{ transformOrigin: `${(EDGE.x / ART.w) * 100}% ${(EDGE.y / ART.h) * 100}%` }}>
             <div className="ld-art ld-plate" style={art(PLATE.id, PLATE.box)} />
-            {LAYERS.map((l) => <div key={l.id} className={`ld-art ld-${l.kind}`} style={art(l.id, l.box)} />)}
+            <div className="ld-art ld-glow" style={art(GLOW.id, GLOW.box)} />
+            {LAYERS.map((l) => <div key={l.id} className={`ld-art ld-${l.kind} ld-${l.id}`} style={art(l.id, l.box)} />)}
             <div className="ld-art ld-joint" style={art(JOINT.id, JOINT.box)} />
             <div
               className="ld-art ld-piece"
@@ -87,12 +119,14 @@ export function BrandIntro() {
                 "--lower": `translate(${((LOWER.dx / PIECE.box.w) * 100).toFixed(2)}%, ${((LOWER.dy / PIECE.box.h) * 100).toFixed(2)}%) scale(${LOWER.scale})`,
               } as React.CSSProperties)}
             />
+            <div className="ld-sheen" style={{ "--mask": `url(${ASSET_DIR}/${MASK.id}.webp)` } as React.CSSProperties} />
             <svg className="ld-glint" viewBox={`0 0 ${ART.w} ${ART.h}`} preserveAspectRatio="none" focusable="false">
               <polyline points={DECK_LINE} pathLength={1} />
             </svg>
           </div>
         </div>
       </div>
+      <svg className="ld-tail" aria-hidden="true" focusable="false"><path pathLength={1} /></svg>
       <div className="ld-id" aria-hidden="true">
         <span className="wm-mark"><Mark /></span>
         <WordmarkText />

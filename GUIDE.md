@@ -187,6 +187,11 @@ screenshot of the top of the page and save it as `public/og.png`.
   only starts once the artwork is decoded; if that takes over 1.8 s the site is shown
   instead. "Skip intro", any click on the screen, Escape and scroll gestures end it at once.
   Match-cut target: `EDGE` in `src/lib/introAssets.ts` (the step in the symbol's band).
+  Behind the bridge a cursive "databridge" signature writes itself (single-stroke Hershey
+  script, `SIGNATURE` in `introAssets.ts`); as the screen lifts, its last stroke runs on as a
+  lime line into the hero's lime square, where the page's data line starts. A violet glow and
+  one glossy sheen come from the bridge's own silhouette (`scripts/intro/build_gloss.py` →
+  `public/intro/glow.webp`, `mask.webp`).
 - **Hero diagram** (`HeroDiagram.tsx`): three loose nodes join and feed the lime square.
   Shown only where there's room (wide screens).
 - **The data line** (`DataLine.tsx`): starts at the hero's lime square and draws down the
