@@ -508,12 +508,15 @@ ul, ol { padding: 0; list-style: none; }
 .ld-go .ld-sheen { animation: ldSheen .7s cubic-bezier(.45, 0, .4, 1) 1.95s both; }
 @keyframes ldSheen { 0% { background-position: 100% 0; opacity: 1; } 92% { opacity: 1; } 100% { background-position: 0% 0; opacity: 0; } }
 
-/* the background signature writes itself, then hands over to the page's line */
-.ld-sig { position: absolute; left: 50%; top: 46%; width: min(92vw, 1250px); transform: translate(-50%, -50%); overflow: visible; pointer-events: none; }
-.ld-sig path { fill: none; stroke: var(--ivory); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 1; stroke-dashoffset: 1; opacity: .17; }
-.ld-go .ld-sig path { animation: ldWrite 2.5s cubic-bezier(.4, .05, .35, 1) .05s both; }
+/* the background signature writes itself: the ink shows behind a pen moving along the
+   letters' centre line (a mask), then hands over to the page's line */
+.ld-sigwrap { position: absolute; left: 50%; top: 40%; width: min(118vw, 1500px); transform: translate(-44%, -50%); pointer-events: none; }
+.ld-sig { display: block; width: 100%; height: auto; overflow: visible; }
+.ld-sig-ink { fill: var(--ivory); opacity: .3; }
+.ld-sig-pen { fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 1; stroke-dashoffset: 1; }
+.ld-go .ld-sig-pen { animation: ldWrite 2.6s cubic-bezier(.35, .1, .45, 1) .05s both; }
 @keyframes ldWrite { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-.ld-go .ld-sig { animation: ldFadeOut .5s linear 3.2s forwards; }
+.ld-go .ld-sigwrap { animation: ldFadeOut .5s linear 3.2s forwards; }
 .ld-tail { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 .ld-tail path { fill: none; stroke: var(--volt); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1 1; stroke-dashoffset: 1; filter: drop-shadow(0 0 4px rgba(215, 255, 63, .6)); }
 .ld-tailing .ld-tail path { animation: ldWrite .38s cubic-bezier(.5, 0, .3, 1) both, ldFadeOut .4s linear .55s forwards; }

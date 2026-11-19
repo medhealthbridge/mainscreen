@@ -187,9 +187,12 @@ screenshot of the top of the page and save it as `public/og.png`.
   only starts once the artwork is decoded; if that takes over 1.8 s the site is shown
   instead. "Skip intro", any click on the screen, Escape and scroll gestures end it at once.
   Match-cut target: `EDGE` in `src/lib/introAssets.ts` (the step in the symbol's band).
-  Behind the bridge a cursive "databridge" signature writes itself (single-stroke Hershey
-  script, `SIGNATURE` in `introAssets.ts`); as the screen lifts, its last stroke runs on as a
-  lime line into the hero's lime square, where the page's data line starts. A violet glow and
+  Behind the bridge a "Databridge" signature writes itself — Mrs Saint Delafield (SIL OFL,
+  `scripts/intro/fonts/`) with a long underline swash; the ink is revealed through a mask
+  that follows the letters' centre line, traced by `scripts/intro/build_sig.py` into
+  `public/intro/signature.svg` (fetched only when the intro plays). As the screen lifts, the
+  swash runs on as a lime line into the hero's lime square, where the page's data line
+  starts. A violet glow and
   one glossy sheen come from the bridge's own silhouette (`scripts/intro/build_gloss.py` →
   `public/intro/glow.webp`, `mask.webp`).
 - **Hero diagram** (`HeroDiagram.tsx`): three loose nodes join and feed the lime square.

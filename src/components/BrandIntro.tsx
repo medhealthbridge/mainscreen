@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { Mark } from "./Mark";
 import { WordmarkText } from "./Wordmark";
-import { ART, ASSET_DIR, DECK_LINE, EDGE, GLOW, JOINT, LAYERS, LOWER, MASK, PIECE, PLATE, SIGNATURE } from "@/lib/introAssets";
+import { ART, ASSET_DIR, DECK_LINE, EDGE, GLOW, JOINT, LAYERS, LOWER, MASK, PIECE, PLATE } from "@/lib/introAssets";
 
 /**
  * FIRST-VISIT INTRO (≈3.2 s, once per browser session, direct home visits only).
@@ -20,9 +20,10 @@ import { ART, ASSET_DIR, DECK_LINE, EDGE, GLOW, JOINT, LAYERS, LOWER, MASK, PIEC
  *              DATA—BRIDGE. Phones keep the camera still and match-cut in place.
  *  2.9–3.2 s   the black screen lifts onto the home page; desktop settles the lockup
  *              into the header, phones dissolve into it.
- *  3.0–3.75 s  behind it all, a cursive "databridge" signature has been writing itself
- *              since the start; as the screen lifts, its last stroke runs on as a lime line
- *              into the hero's lime square — where the page's data line begins — then fades.
+ *  3.0–3.75 s  behind it all, a "Databridge" signature has been writing itself since the
+ *              start (the ink appears behind a pen moving along the letters' centre line);
+ *              as the screen lifts, its underline swash runs on as a lime line into the
+ *              hero's lime square — where the page's data line begins — then fades.
  *
  * A soft violet glow (from the bridge's own silhouette) breathes in once the structure
  * stands and swells at contact; one glossy sheen sweeps across it with the highlight.
@@ -72,13 +73,13 @@ export function BrandIntro() {
     // The signature's last stroke runs on into the hero's lime square (the data line's start).
     const tail = () => {
       if (html.classList.contains("intro-done")) return;
-      const sig = document.querySelector<SVGPathElement>(".ld-sig path");
+      const sig = document.querySelector<SVGSVGElement>(".ld-sig");
       const svg = document.querySelector<SVGSVGElement>(".ld-tail");
       const stop = document.querySelector<HTMLElement>(".hero-title .stop");
       const ctm = sig?.getScreenCTM();
-      if (!sig || !svg || !stop || !ctm) return;
-      const end = sig.getPointAtLength(sig.getTotalLength());
-      const a = new DOMPoint(end.x, end.y).matrixTransform(ctm);
+      const end = sig?.dataset.end?.split(" ").map(Number);
+      if (!sig || !svg || !stop || !ctm || !end || end.length !== 2) return;
+      const a = new DOMPoint(end[0], end[1]).matrixTransform(ctm);
       const r = stop.getBoundingClientRect();
       const b = { x: r.left + r.width * 0.15, y: r.top + r.height / 2 };
       const vw = window.innerWidth, vh = window.innerHeight;
@@ -103,9 +104,8 @@ export function BrandIntro() {
   return (
     <div className="ld" hidden>
       <div className="ld-bg" aria-hidden="true" />
-      <svg className="ld-sig" viewBox={SIGNATURE.viewBox} aria-hidden="true" focusable="false">
-        <path d={SIGNATURE.d} pathLength={1} />
-      </svg>
+      {/* the signature (public/intro/signature.svg) is inserted here by the boot script */}
+      <div className="ld-sigwrap" aria-hidden="true" suppressHydrationWarning dangerouslySetInnerHTML={{ __html: "" }} />
       <div className="ld-panel" aria-hidden="true">
         <div className="ld-stage">
           <div className="ld-cam" style={{ transformOrigin: `${(EDGE.x / ART.w) * 100}% ${(EDGE.y / ART.h) * 100}%` }}>

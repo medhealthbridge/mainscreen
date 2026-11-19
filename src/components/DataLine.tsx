@@ -102,6 +102,8 @@ export function DataLine() {
         if (pts.length < 2) { path2d = null; clear(); return; }
       }
 
+      // Nothing measurable yet (e.g. anchors not laid out): try again on the next rebuild.
+      if (pts.length < 2) { path2d = null; clear(); return; }
       // Geometry measured directly (fast) — never getPointAtLength (very slow).
       samples = [{ l: 0, x: pts[0].x, y: pts[0].y }];
       nodes = [];
