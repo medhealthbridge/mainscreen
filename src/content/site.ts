@@ -7,11 +7,8 @@ export const site = {
   /** Studio / personal name. Used in the wordmark, titles and footer. */
   name: "databridge",
 
-  /**
-   * The wordmark is built from two parts joined by the accent "bridge" bar.
-   * Change these if your name changes, e.g. ["JANE", "DOE"].
-   */
-  wordmark: ["DATA", "BRIDGE"] as [string, string],
+  /** The wordmark shown beside the symbol (one uninterrupted word). */
+  wordmark: "DATABRIDGE",
 
   /** Public contact address. Shown on the page and used for the email fallback. */
   email: "glenlozada0@gmail.com",

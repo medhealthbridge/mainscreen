@@ -1,13 +1,12 @@
 import { site } from "@/content/site";
+import { Mark } from "./Mark";
 
-/** Typographic wordmark: two words joined by the accent "bridge" span. */
+/** Header lockup: the symbol, then the uninterrupted wordmark. */
 export function Wordmark({ className = "" }: { className?: string }) {
-  const [a, b] = site.wordmark;
   return (
     <a href="/" className={`wordmark ${className}`} aria-label={`${site.name} — home`}>
-      <span aria-hidden="true">{a}</span>
-      <span className="span" aria-hidden="true" />
-      <span aria-hidden="true">{b}</span>
+      <span className="wm-mark"><Mark split /></span>
+      <span className="wm-word" aria-hidden="true"><span>{site.wordmark}</span></span>
     </a>
   );
 }

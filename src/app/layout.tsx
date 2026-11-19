@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     images: [{ url: "/og.png", width: 1200, height: 630, alt: `${site.name} — websites and custom business systems` }],
   },
   twitter: { card: "summary_large_image", title: site.title, description: site.description, images: ["/og.png"] },
-  icons: { icon: "/icon.svg" },
+  icons: { icon: [{ url: "/icon.svg", type: "image/svg+xml" }], apple: "/apple-icon.png" },
 };
 
 export const viewport: Viewport = {

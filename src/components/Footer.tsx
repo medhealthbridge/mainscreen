@@ -1,7 +1,7 @@
 import { site } from "@/content/site";
+import { Mark } from "./Mark";
 
 export function Footer() {
-  const [a, b] = site.wordmark;
   const year = new Date().getFullYear();
   return (
     <footer className="site-footer">
@@ -36,7 +36,7 @@ export function Footer() {
       </div>
       <div className="wrap" aria-hidden="true">
         <div className="footer-mark" data-reveal="fade">
-          <span>{a}</span><span className="span" /><span>{b}</span>
+          <Mark className="fm-symbol" /><span>{site.wordmark}</span>
         </div>
       </div>
       <div className="wrap">

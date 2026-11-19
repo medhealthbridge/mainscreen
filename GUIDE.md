@@ -11,14 +11,15 @@ You don't need to touch layout code to update text, projects or contact details.
 | The step-by-step demo inside a featured project | `src/content/transformation.ts` |
 | Problems, services, process steps, FAQ | `src/content/services.ts` |
 | Colours, fonts, spacing | `src/app/globals.css` (tokens at the top) |
-| Social-sharing image / browser icon | `public/og.png`, `public/icon.svg` |
+| Social-sharing image / browser icon | `public/og.png`, `public/icon.svg`, `public/apple-icon.png` |
+| The DataBridge symbol (geometry) | `src/lib/mark.ts` (drawn by `src/components/Mark.tsx`) |
 
 ---
 
 ## 1. Your name and contact details — `src/content/site.ts`
 
 - `name` — used in titles and the footer.
-- `wordmark` — the two words either side of the yellow-green bar, e.g. `["DATA", "BRIDGE"]`.
+- `wordmark` — the single word shown beside the symbol, e.g. `"DATABRIDGE"` (no dash).
 - `email` — shown on the page and used by the email fallback.
 - `url` — your live domain (no trailing slash). Used for link previews.
 - `links` — your public profile links (LinkedIn, GitHub…). They appear in About and the footer. Leave empty to hide.
@@ -163,11 +164,19 @@ screenshot of the top of the page and save it as `public/og.png`.
 
 ## 6. How the signature interactions behave
 
-- **Brand intro** (`BrandIntro.tsx`, styles at the end of `globals.css`): two lime endpoints,
-  a connector, one signal, then the dash of DATA—BRIDGE and the words; it settles into the
-  header in about a second. It plays once per browser session, only on the home page, never
-  for `#deep-links`, and never with reduced motion. The page underneath is live the whole
-  time; any scroll, tap or key press fast-forwards it.
+- **The symbol** (`src/lib/mark.ts`): a heavy D on a 24 × 24 grid with two counters whose
+  facing edges share one stair-step, so the band between them rises one level left to right.
+  Every edge sits on a multiple of 1.5 units, so it stays crisp at 16 px. The header lockup,
+  the footer, the favicon (`public/icon.svg`: ink on light tabs, lime on dark) and the
+  home-screen icon all use this one geometry. If you edit it, keep that 1.5-unit rule and
+  update `icon.svg` with the same path.
+- **Signature entrance** (`BrandIntro.tsx`): the header's own symbol starts as two cut pieces
+  slightly apart along the step's diagonal, slides into register (~560 ms), holds, and on
+  wide screens glides from the free space beside the first headline line into the header,
+  where DATABRIDGE is unmasked (~1.05 s). Small or short screens run the same assembly inside
+  the logo itself (~850 ms). It plays once per browser session, only on the home page, never
+  for `#deep-links`, and never with reduced motion. The page is readable and clickable the
+  whole time; any scroll, tap, key press or opening the menu settles the logo at once.
 - **Hero diagram** (`HeroDiagram.tsx`): three loose nodes join and feed the lime square.
   Shown only where there's room (wide screens).
 - **The data line** (`DataLine.tsx`): starts at the hero's lime square and draws down the
