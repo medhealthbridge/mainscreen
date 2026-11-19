@@ -11,16 +11,39 @@ import { RevealObserver } from "@/components/RevealObserver";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { Lightbox } from "@/components/Lightbox";
 import { BrandIntro } from "@/components/BrandIntro";
+import { ALL_ASSETS, ART, EDGE } from "@/lib/introAssets";
 
 /**
- * Runs before first paint: marks JS as available (reveal animations never hide content
- * without it) and decides whether the first-visit loading screen plays — first visit this
- * session, home page, no #deep-link, motion allowed. Decided here so nothing flashes.
- * It also wires the ways out *before* the app hydrates, so nobody is ever stranded:
- * the "Skip intro" button (or any click on the screen), Escape, scroll gestures and keys,
- * and a hard 5-second timeout. `window.__dbIntroDone()` ends it.
+ * Runs before first paint. Marks JS as available (reveal animations never hide content
+ * without it) and decides whether the first-visit intro plays: first visit this session,
+ * home page, no #deep-link, motion allowed. It then
+ *  · wires the ways out before the app hydrates — "Skip intro" (or any click on the
+ *    screen), Escape, scroll gestures and keys — plus a hard stop;
+ *  · preloads and decodes the bridge artwork, and only starts the intro (`ld-go`) once
+ *    it is ready; if it takes longer than 1.8 s the site is shown instead;
+ *  · works out the match-cut for this viewport (where the piece's stepped edge lands on
+ *    screen and how big the symbol must be to share it) as CSS custom properties.
+ * `window.__dbIntroDone()` ends the intro.
  */
-const INTRO_DECISION = `(function(){var d=document.documentElement;d.classList.add('js');try{if(matchMedia('(prefers-reduced-motion: reduce)').matches||sessionStorage.getItem('db-intro')||location.pathname!=='/'||location.hash)return;d.classList.add('intro');sessionStorage.setItem('db-intro','1');var ev=['click','keydown','wheel','touchmove'],keys={Escape:1,' ':1,PageDown:1,ArrowDown:1,End:1},skip,done=function(){if(d.classList.contains('intro-done'))return;d.classList.add('intro-done');ev.forEach(function(t){removeEventListener(t,skip,true)});window.dispatchEvent(new Event('db:intro-done'))};skip=function(e){if(e.type==='keydown'&&!keys[e.key])return;if(e.type==='click'&&!(e.target.closest&&e.target.closest('.ld')))return;d.classList.add('intro-skip');done()};ev.forEach(function(t){addEventListener(t,skip,{passive:true,capture:true})});window.__dbIntroDone=done;setTimeout(done,5000)}catch(e){}})()`;
+const LOCKUP_EM = 10.82; // width of the lockup in em (symbol, gap, DATA, bridge dash, BRIDGE)
+const BOOT = { src: ALL_ASSETS, w: ART.w, h: ART.h, ex: EDGE.x, ey: EDGE.y, u: EDGE.unit, lw: LOCKUP_EM };
+const INTRO_DECISION = `(function(){var d=document.documentElement;d.classList.add('js');try{
+if(matchMedia('(prefers-reduced-motion: reduce)').matches||sessionStorage.getItem('db-intro')||location.pathname!=='/'||location.hash)return;
+d.classList.add('intro');sessionStorage.setItem('db-intro','1');
+var ev=['click','keydown','wheel','touchmove'],keys={Escape:1,' ':1,PageDown:1,ArrowDown:1,End:1},skip;
+var done=function(){if(d.classList.contains('intro-done'))return;d.classList.add('intro-done');ev.forEach(function(t){removeEventListener(t,skip,true)});window.dispatchEvent(new Event('db:intro-done'))};
+skip=function(e){if(e.type==='keydown'&&!keys[e.key])return;if(e.type==='click'&&!(e.target.closest&&e.target.closest('.ld')))return;d.classList.add('intro-skip');done()};
+ev.forEach(function(t){addEventListener(t,skip,{passive:true,capture:true})});window.__dbIntroDone=done;
+var A=${JSON.stringify(BOOT)},left=A.src.length,gate=setTimeout(done,1800);
+var go=function(){if(d.classList.contains('intro-done'))return;clearTimeout(gate);
+var vw=innerWidth,vh=innerHeight,zoom=vw>=761&&vh>=500,Z=zoom?2.2:1,k=Math.min(vw,vh*A.w/A.h)/A.w,
+ex=vw/2+(A.ex-A.w/2)*k,ey=vh/2+(A.ey-A.h/2)*k,u=A.u*k*Z,F=Math.min(.86*vw,946)/A.lw,cx=vw/2-A.lw*F/2+.706*F,s=d.style;
+s.setProperty('--ld-vw',vw+'px');s.setProperty('--ld-vh',vh+'px');s.setProperty('--ld-F',F+'px');
+s.setProperty('--ld-tx',(ex-cx)+'px');s.setProperty('--ld-ty',(ey-3*u-vh/2)+'px');s.setProperty('--ld-ts',(24*u/(1.412*F)).toFixed(4));
+d.classList.add(zoom?'ld-zoom':'ld-still');d.classList.add('ld-go');setTimeout(done,5200)};
+var one=function(){if(--left===0)go()};
+A.src.forEach(function(url){var i=new Image();i.onload=function(){var p=i.decode&&i.decode();if(p&&p.then)p.then(one,one);else one()};i.onerror=done;i.src=url});
+}catch(e){}})()`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),

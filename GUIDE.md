@@ -172,15 +172,21 @@ screenshot of the top of the page and save it as `public/og.png`.
   update `icon.svg` with the same path.
 - **The lockup**: the D/B symbol, then DATA, a dash drawn as a small arched bridge
   (`BridgeDash.tsx`), then BRIDGE. Header, footer and loading screen share it.
-- **First-visit loading screen** (`BrandIntro.tsx`, geometry in `src/lib/bridgeScene.ts`,
-  styles under "Loading screen" in `globals.css`): two piers rise, three deck segments per
-  side glide in and leave a stepped opening, a lime key lowers into it and one signal
-  crosses; the view tilts down onto the joint — the key is exactly the symbol's stepped
-  band — the D grows around it, DATA—BRIDGE appears, and the screen lifts (~3.3 s). Desktop
-  settles the lockup into the header; phones dissolve into it. Once per browser session,
-  direct home visits only; never for `#deep-links` or reduced motion. "Skip intro", any
-  click on the screen, Escape and scroll gestures end it at once, and it clears itself
-  even if the site's JavaScript fails (hard stop at 5 s).
+- **First-visit intro** (`BrandIntro.tsx`, timeline under "Intro" in `globals.css`, boot
+  logic in the inline script in `layout.tsx`): built from the supplied bridge renders
+  (`bridge-open.svg`, `bridge-closed.svg`). They are cut into layers in `public/intro/` by
+  `scripts/intro/build_layers.py` (needs Python with numpy, scipy, Pillow):
+  `python3 scripts/intro/build_layers.py open.png closed.png public/intro`, then update the
+  boxes in `src/lib/introAssets.ts` from the printed `layers.json`. Soft masks reveal the
+  left pylon from its base, its cables and half deck toward the centre, then the right side;
+  the lime piece lowers into the open joint (550 ms) and the closed render's joint takes over
+  on contact; a lime highlight runs along the deck; desktop closes in on the piece's stepped
+  edge and match-cuts to the same step in the symbol; the lockup forms and the screen lifts
+  (~3.2 s). Phones keep the camera still. Once per browser session, direct home visits only;
+  never for `#deep-links` or reduced motion (those visits never download the artwork). It
+  only starts once the artwork is decoded; if that takes over 1.8 s the site is shown
+  instead. "Skip intro", any click on the screen, Escape and scroll gestures end it at once.
+  Match-cut target: `EDGE` in `src/lib/introAssets.ts` (the step in the symbol's band).
 - **Hero diagram** (`HeroDiagram.tsx`): three loose nodes join and feed the lime square.
   Shown only where there's room (wide screens).
 - **The data line** (`DataLine.tsx`): starts at the hero's lime square and draws down the
